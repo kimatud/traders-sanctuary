@@ -1,0 +1,2701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traders Sanctuary - Forex Community</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="manifest" href="site.webmanifest">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Base styles for the entire application */
+        html, body, #root {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Comic Neue', cursive;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #f3f4f6; /* Tailwind gray-100 for light mode */
+            color: #374151; /* Default text color for light mode - Tailwind gray-700 */
+        }
+
+        /* Explicit header background for light mode to ensure it's light */
+        header {
+            background-color: #90CDF4 !important; /* Original light blue (Tailwind blue-300) */
+            /* Add backdrop filter for style */
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+            background-color: rgba(144, 205, 244, 0.8) !important;
+        }
+
+        /* Dark mode specific styles */
+        .dark body {
+            background-color: #000000 !important; /* Pure black for overall background */
+            color: #e2e8f0; /* Tailwind gray-200 for general text */
+        }
+        /* Explicit header background for dark mode */
+        .dark header {
+            /* Add backdrop filter for style */
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+            background-color: rgba(26, 26, 26, 0.8) !important; /* Dark grey for header in dark mode with opacity */
+        }
+
+        /* This rule specifically targets elements with .bg-white when dark mode is active */
+        .dark .bg-white {
+            background-color: #1a1a1a !important; /* Darker gray for elements that were white */
+        }
+        
+        .dark .text-gray-900 {
+            color: #f8f8f8 !important; 
+        }
+        .dark .text-gray-800 {
+            color: #f8f8f8 !important;
+        }
+        .dark .text-gray-700 {
+            color: #e0e0e0 !important;
+        }
+        
+        label, .form-label-text {
+             color: #1f2937; /* A dark gray for high visibility */
+        }
+        
+        .dark label, .dark .form-label-text {
+            color: #d1d5db; /* A light gray for dark mode */
+        }
+        
+        /* FIX: Set Auth Modal title to dark blue in light mode */
+        .auth-modal-title {
+            color: #1e40af !important; /* Tailwind blue-800 */
+        }
+        
+        .auth-modal-helper-text {
+            color: #1f2937 !important; /* A dark gray for high visibility */
+        }
+
+        /* Overrides for dark mode to keep text light */
+        .dark .auth-modal-title {
+            color: #90cdf4 !important; /* Original dark mode color (blue-300) */
+        }
+        .dark .auth-modal-helper-text {
+            color: #9ca3af !important; /* Tailwind gray-400 */
+        }
+
+        .dark .text-gray-600 {
+            color: #c0c0c0;
+        }
+        .dark .text-gray-500 {
+            color: #a0a0a0;
+        }
+        .dark .border-gray-200 {
+            border-color: #333333; /* Darker border */
+        }
+        .dark .bg-gray-50 {
+            background-color: #1a1a1a; /* Darker gray for light gray elements */
+        }
+        .dark .bg-blue-50 {
+            background-color: #1a1a1a; /* Darker blue accents to blend with black */
+        }
+        .dark .border-blue-200 {
+            border-color: #4299e1; /* Tailwind blue-500 */
+        }
+        .dark .shadow-lg {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.7), 0 4px 6px -2px rgba(0, 0, 0, 0.35); /* More pronounced shadow */
+        }
+        .dark .table-auto th {
+            background-color: #1a1a1a; /* Darker header for tables */
+            color: #f8f8f8;
+        }
+        .dark .table-auto td { /* Ensure table cell text is visible */
+            color: #e0e0e0;
+        }
+        .dark .table-auto tbody tr:hover {
+            background-color: #333333; /* Darker hover for tables */
+        }
+        
+        /* Adjusted Hero section for dark mode - no gradient, clear text */
+        .dark .hero-dark-mode-bg { /* Custom class for hero dark mode background */
+            background-image: none !important; /* Remove gradient */
+            background-color: rgba(0, 0, 0, 0.2) !important; /* Very subtle dark overlay */
+        }
+        .dark .hero-dark-mode-bg .text-blue-900,
+        .dark .hero-dark-mode-bg .text-blue-700,
+        .dark .hero-dark-mode-bg .text-gray-800 {
+            color: #ffffff !important; /* Force white text for clarity */
+        }
+        .dark .text-blue-200 { /* Hero section accent text */
+            color: #a0aec0;
+        }
+        .dark .border-t-4.border-blue-600 { /* Feature card border */
+            border-color: #4299e1; /* Tailwind blue-500 */
+        }
+        /* NEW: Mint blue for announcement titles in dark mode */
+        .dark .text-blue-800 {
+            color: #A7F3D0 !important;
+        }
+        .dark .text-blue-600 {
+            color: #63b3ed;
+        }
+        .dark .bg-green-500 {
+            background-color: #48bb78;
+        }
+        .dark .hover\:bg-green-600:hover {
+            background-color: #38a169;
+        }
+        .dark .focus\:ring-green-400:focus {
+            box-shadow: 0 0 0 3px rgba(72, 187, 120, 0.5);
+        }
+        .dark .bg-purple-800 {
+            background-color: #553c9a;
+        }
+        .dark .bg-purple-600 {
+            background-color: #6b46c1;
+        }
+        .dark .text-purple-900 {
+            color: #e9d8fd;
+        }
+        /* FIX: Dark mode premium button */
+        .dark .premium-button {
+            background-color: #d69e2e !important; /* A darker yellow */
+            color: #1a202c !important; /* Dark text for contrast */
+        }
+        .dark .premium-button:hover {
+            background-color: #b7791f !important; /* Even darker for hover */
+        }
+        .dark .bg-yellow-400 {
+            background-color: #f6e05e;
+        }
+        .dark .hover\:bg-yellow-500:hover {
+            background-color: #ecc94b;
+        }
+        .dark .focus\:ring-yellow-300:focus {
+            box-shadow: 0 0 0 3px rgba(250, 219, 94, 0.5);
+        }
+        .dark .bg-gray-900 {
+            background-color: #1a202c; /* Ensure this is consistent with body */
+        }
+        .dark .text-gray-300 {
+            color: #e0e0e0;
+        }
+        .dark .text-white {
+            color: #fff;
+        }
+        .dark .hover\:text-blue-400:hover {
+            color: #90cdf4;
+        }
+        .dark .text-pink-500 {
+            color: #ed64a6;
+        }
+        .dark .text-indigo-500 {
+            color: #805ad5;
+        }
+        .dark .text-blue-400 {
+            color: #63b3ed;
+        }
+        .dark .bg-gray-200 {
+            background-color: #4a5568;
+        }
+        .dark .text-red-600 {
+            color: #fc8181;
+        }
+        .dark .border-green-200 {
+            border-color: #48bb78;
+        }
+        .dark .border-yellow-200 {
+            border-color: #ecc94b;
+        }
+        /* Specific dark mode override for dashboard main background to be black */
+        .dark .dashboard-main-bg {
+            background-color: #000000 !important; /* Pure black for dashboard main background */
+        }
+        /* Increased opacity for background image in hero section */
+        .dark .hero-image-opacity {
+            opacity: 0.6; /* Increased opacity to make image more visible in dark mode */
+        }
+
+        /* Custom table styling for better readability in admin panel */
+        .table-auto {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table-auto th, .table-auto td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb; /* Tailwind gray-200 */
+        }
+        .dark .table-auto th, .dark .table-auto td {
+            border-bottom: 1px solid #333333; /* Darker border for tables */
+        }
+        .table-auto th {
+            background-color: #f9fafb; /* Tailwind gray-50 */
+            font-weight: 600;
+            color: #374151; /* Tailwind gray-700 */
+            text-transform: uppercase;
+            font-size: 0.875rem; /* text-sm */
+        }
+        .dark .table-auto th {
+            background-color: #1a1a1a; /* Darker header for tables */
+            color: #f8f8f8;
+        }
+        .table-auto tbody tr:hover {
+            background-color: #f3f4f6; /* Tailwind gray-100 */
+        }
+        .dark .table-auto tbody tr:hover {
+            background-color: #333333; /* Darker hover for tables */
+        }
+        /* Canvas specific styles */
+        .forex-animation-canvas {
+            display: block; /* Ensures canvas takes full width and height of its container */
+            width: 100%;
+            height: 100%;
+            position: absolute; /* Position absolutely within the hero section */
+            top: 0;
+            left: 0;
+            z-index: 0; /* Ensure it's behind the text content */
+        }
+
+        /* Specific styles for Theme Switcher Dropdown */
+        .theme-dropdown-light-bg {
+            background-color: #ffffff !important; /* Force white background in light mode */
+        }
+        .dark .theme-dropdown-dark-bg {
+            background-color: #1f2937 !important; /* Tailwind gray-900 for dark mode dropdown */
+        }
+        /* Increased text darkness for dropdown items in light mode */
+        .theme-dropdown-light-bg .text-gray-900 {
+            color: #1a202c !important; /* Darker text for light mode dropdown */
+        }
+        /* Light mode dropdown hover background */
+        .theme-dropdown-light-bg .hover\:bg-blue-50:hover { /* Targeting the specific hover class */
+            background-color: #eff6ff !important; /* Tailwind blue-50 */
+        }
+
+        /* Header navigation text and icon colors for light mode */
+        .light-mode-nav-link-text {
+            color: #1a202c !important; /* Very dark gray for text */
+        }
+        .light-mode-nav-link-icon {
+            color: #4a5568 !important; /* Darker gray for icons */
+        }
+        .light-mode-nav-link-hover:hover {
+            background-color: rgba(255, 255, 255, 0.7) !important;
+            color: #1a202c !important;
+        }
+        .light-mode-nav-link-active {
+            background-color: rgba(255, 255, 255, 0.7) !important;
+            color: #1a202c !important;
+        }
+
+        /* Admin Dashboard: Email text color in dark mode */
+        .dark .admin-email-text {
+            color: #fafafa !important; /* Very light grey for emails in dark mode */
+        }
+
+        /* Admin Dashboard: Change Role button text fix for dark mode */
+        .dark .change-role-button {
+            color: #90cdf4 !important;
+            background-color: #2c5282 !important;
+        }
+        .dark .change-role-button:hover {
+            background-color: #2a69ac !important;
+        }
+        
+        /* NEW: Keyframes for jumping letter animation */
+        @keyframes jump {
+            0%, 100% {
+                transform: translateY(0);
+                color: #3b82f6; /* Blue */
+            }
+            25% {
+                color: #22c55e; /* Green */
+            }
+            50% {
+                transform: translateY(-15px);
+                color: #d946ef; /* Fuchsia */
+            }
+            75% {
+                color: #f97316; /* Orange */
+            }
+        }
+        
+        /* NEW: Class to apply the jumping letter animation */
+        .jumping-letter {
+            display: inline-block;
+            animation: jump 1.8s ease-in-out infinite;
+        }
+        
+        /* NEW: Stylish hamburger menu transition */
+        .mobile-menu {
+            transition: all 0.3s ease-in-out;
+            max-height: 0;
+            overflow: hidden;
+        }
+        .mobile-menu-open {
+            max-height: 100vh; /* A large enough value to show all content */
+            padding-top: 0.5rem;
+            padding-bottom: 0.75rem;
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+        .dark .mobile-menu-open {
+             border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        /* FIX: Hamburger menu text color in light mode */
+        .mobile-menu-light-text {
+            color: #1a202c !important;
+        }
+        .mobile-menu-light-text:hover {
+             background-color: rgba(0,0,0,0.05) !important;
+        }
+        .mobile-menu-light-active {
+            color: #1a202c !important;
+            background-color: rgba(0,0,0,0.1) !important;
+        }
+
+        /* FIX: GLOBAL INPUT STYLES FOR UNIFORMITY AND VISIBILITY */
+        /* These ensure inputs are light by default and adapt to dark mode */
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="file"],
+        textarea {
+            background-color: #ffffff;
+            border-color: #d1d5db; /* gray-300 */
+            color: #111827; /* gray-900 */
+        }
+        input[type="text"]::placeholder,
+        input[type="email"]::placeholder,
+        input[type="password"]::placeholder,
+        textarea::placeholder {
+            color: #6b7280; /* gray-500 */
+        }
+
+        /* Dark mode overrides for global input styles */
+        .dark input[type="text"],
+        .dark input[type="email"],
+        .dark input[type="password"],
+        .dark input[type="file"],
+        .dark textarea {
+            background-color: #374151; /* gray-700 */
+            border-color: #4b5563; /* gray-600 */
+            color: #f9fafb; /* gray-50 */
+        }
+        .dark input[type="text"]::placeholder,
+        .dark input[type="email"]::placeholder,
+        .dark input[type="password"]::placeholder,
+        .dark textarea::placeholder {
+            color: #9ca3af; /* gray-400 */
+        }
+        
+        /* NEW: Certificate marquee styles */
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .marquee {
+            display: flex;
+            width: max-content;
+            animation: scroll 40s linear infinite;
+            padding-bottom: 1rem; /* Add space for the shadow */
+        }
+        .marquee:hover {
+            animation-play-state: paused;
+        }
+        .marquee img {
+            height: 220px; /* Increased height */
+            margin: 0 1.5rem; /* Increased margin */
+            border-radius: 0.75rem; /* Slightly larger border radius */
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            transition: transform 0.3s ease, filter 0.3s ease;
+            filter: grayscale(50%); /* Start with a slight grayscale */
+        }
+        .dark .marquee img {
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        .marquee img:hover {
+            transform: scale(1.05) translateY(-5px);
+            filter: grayscale(0%); /* Remove grayscale on hover */
+        }
+
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="module">
+        // --- ES Module Imports (MUST be at the top-level of the module) ---
+        // React core and hooks
+        import React, { useState, useEffect, createContext, useContext, useRef, useMemo, useCallback } from 'https://esm.sh/react@18.2.0';
+        import ReactDOM from 'https://esm.sh/react-dom@18.2.0/client';
+
+        // Firebase SDKs
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+        import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, query, onSnapshot, deleteDoc, addDoc, getDocs, where } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+        import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
+
+        // Lucide React icons (for UI elements)
+        import { Home, User, Mail, BarChart, BookOpen, Users, Bell, MessageSquare, Instagram, Send, KeyRound, LogIn, LogOut, UserPlus, X, CheckCircle, Settings, Edit, Trash2, Check, XCircle, FileText, NotebookText, Menu, Sun, Moon, Monitor, ChevronDown, Eye, EyeOff, Award } from 'https://esm.sh/lucide-react@0.395.0';
+
+        // Recharts for charting (though not currently used, kept for potential future use)
+        import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'https://esm.sh/recharts@2.12.7?deps=react@18.2.0,react-dom@18.2.0';
+
+        // Three.js for 3D animation
+        import * as THREE from 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.module.min.js';
+
+        // --- Main Application Logic (wrapped in try-catch for runtime errors) ---
+        try {
+            // --- Firebase Configuration & Initialization ---
+            const firebaseConfig = {
+                apiKey: "AIzaSyCMQ9nlvS1WPCszC8Bahzcec6WXF3F_0tE",
+                authDomain: "traders-sanctuary.firebaseapp.com",
+                projectId: "traders-sanctuary",
+                storageBucket: "traders-sanctuary.firebaseapp.com",
+                messagingSenderId: "4336211178",
+                appId: "1:433621117821:web:e7996f5098b8e9c3e97a14",
+                measurementId: "G-YEHJ0QBXQH"
+            };
+            const appId = firebaseConfig.projectId;
+
+            let app;
+            let auth;
+            let db;
+            let storage;
+
+            if (Object.keys(firebaseConfig).length > 0 && firebaseConfig.apiKey) {
+                app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+                storage = getStorage(app);
+            } else {
+                console.error("Firebase configuration not found or incomplete.");
+            }
+            
+            // --- Auth Context ---
+            const AuthContext = createContext(null);
+
+            const AuthProvider = ({ children }) => {
+                const [user, setUser] = useState(null);
+                const [isAuthReady, setIsAuthReady] = useState(false);
+                const [authError, setAuthError] = useState(null);
+
+                useEffect(() => {
+                    if (!auth) {
+                        setIsAuthReady(true);
+                        return;
+                    }
+
+                    let unsubscribeFromProfile = () => {};
+
+                    const unsubscribeFromAuth = onAuthStateChanged(auth, async (currentUser) => {
+                        unsubscribeFromProfile(); // Always clean up the previous profile listener
+
+                        if (currentUser) {
+                            const userParentDocRef = doc(db, `artifacts/${appId}/users/${currentUser.uid}`);
+                            await setDoc(userParentDocRef, {}, { merge: true });
+                            const userProfileDocRef = doc(db, `artifacts/${appId}/users/${currentUser.uid}/profile/data`);
+                            
+                            unsubscribeFromProfile = onSnapshot(userProfileDocRef, async (userProfileDocSnap) => {
+                                let userWithRole = { ...currentUser };
+                                if (userProfileDocSnap.exists()) {
+                                    userWithRole = { ...currentUser, ...userProfileDocSnap.data() };
+                                } else {
+                                    const newProfile = { 
+                                        email: currentUser.email, 
+                                        role: 'member', 
+                                        createdAt: new Date().toISOString(),
+                                        displayName: currentUser.email.split('@')[0]
+                                    };
+                                    await setDoc(userProfileDocRef, newProfile, { merge: true });
+                                    userWithRole = { ...currentUser, ...newProfile };
+                                }
+                                setUser(userWithRole);
+                                if (!isAuthReady) setIsAuthReady(true);
+                            }, (error) => {
+                                console.error("AuthProvider: Error listening to user profile:", error);
+                                setUser({ ...currentUser, role: 'member', displayName: 'Error Loading Profile' });
+                                if (!isAuthReady) setIsAuthReady(true);
+                            });
+
+                        } else {
+                            setUser(null);
+                            setIsAuthReady(true);
+                        }
+                    });
+
+                    return () => {
+                        unsubscribeFromAuth();
+                        unsubscribeFromProfile();
+                    };
+                }, [auth]);
+
+
+                const register = async (email, password) => {
+                    setAuthError(null);
+                    try {
+                        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                        const userParentDocRef = doc(db, `artifacts/${appId}/users/${userCredential.user.uid}`);
+                        await setDoc(userParentDocRef, {}, { merge: true });
+
+                        const userProfileRef = doc(db, `artifacts/${appId}/users/${userCredential.user.uid}/profile/data`);
+                        await setDoc(userProfileRef, { 
+                            email: email, 
+                            role: 'member', 
+                            createdAt: new Date().toISOString(),
+                            displayName: email.split('@')[0]
+                        });
+                        return userCredential.user;
+                    }
+                    catch (error) {
+                        setAuthError(error.message);
+                        throw error;
+                    }
+                };
+
+                const login = async (email, password) => {
+                    setAuthError(null);
+                    try {
+                        return await signInWithEmailAndPassword(auth, email, password);
+                    }
+                    catch (error) {
+                        setAuthError(error.message);
+                        throw error;
+                    }
+                };
+
+                const logout = async () => {
+                    setAuthError(null);
+                    try {
+                        await signOut(auth);
+                    }
+                    catch (error) {
+                        setAuthError(error.message);
+                        throw error;
+                    }
+                };
+                
+                const resetPassword = async (email) => {
+                    setAuthError(null);
+                    try {
+                        await sendPasswordResetEmail(auth, email);
+                        return true;
+                    }
+                    catch (error) {
+                        setAuthError(error.message);
+                        throw error;
+                    }
+                };
+
+
+                return (
+                    React.createElement(AuthContext.Provider, { value: { user, isAuthReady, authError, register, login, logout, resetPassword } },
+                        children
+                    )
+                );
+            };
+
+            // --- Global Message Modal Component ---
+            const MessageModal = ({ message, type, onClose, showCloseButton }) => {
+                if (!message) return null;
+
+                const isSuccess = type === 'success';
+                const lightModeTextClass = isSuccess ? 'text-green-800' : 'text-red-800';
+                const bgColor = isSuccess ? 'bg-green-100 border-green-400 dark:bg-green-900/20 dark:border-green-600' : 'bg-red-100 border-red-400 dark:bg-red-900/20 dark:border-red-600';
+                const icon = isSuccess ? React.createElement(CheckCircle, { className: "h-6 w-6 text-green-500" }) : React.createElement(XCircle, { className: "h-6 w-6 text-red-500" });
+
+                return (
+                    React.createElement('div', { className: "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" },
+                        React.createElement('div', { className: `bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 max-w-sm w-full border ${bgColor} flex flex-col items-center text-center` },
+                            React.createElement('div', { className: "mb-4" },
+                                icon
+                            ),
+                            React.createElement('p', { className: `text-lg font-semibold mb-4 ${lightModeTextClass} dark:text-gray-200` }, message),
+                            showCloseButton && React.createElement('button', {
+                                onClick: onClose,
+                                className: "mt-2 px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+                            },
+                                "Close"
+                            )
+                        )
+                    )
+                );
+            };
+
+            // --- Auth Modal Component (Login, Register, Reset Password) ---
+            const AuthModal = ({ show, onClose, type, onSwitchType }) => {
+                const [email, setEmail] = useState('');
+                const [password, setPassword] = useState('');
+                const [confirmPassword, setConfirmPassword] = useState('');
+                const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+                const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
+                const [message, setMessage] = useState('');
+                const [messageType, setMessageType] = useState('');
+                const { register, login, resetPassword, authError } = useContext(AuthContext);
+
+                const resetForm = useCallback(() => {
+                    setEmail('');
+                    setPassword('');
+                    setConfirmPassword('');
+                    setMessage('');
+                    setMessageType('');
+                }, []);
+
+                useEffect(() => {
+                    if (authError) {
+                        setMessage(authError.replace('Firebase: ', '').replace(/ \(.+\)/, ''));
+                        setMessageType('error');
+                    }
+                }, [authError]);
+
+                useEffect(() => {
+                    if (show) {
+                        resetForm();
+                    }
+                }, [show, type, resetForm]);
+
+
+                if (!show) return null;
+                
+                const handleSubmit = async (e) => {
+                    e.preventDefault();
+                    setMessage('');
+                    setMessageType('');
+
+                    if (type === 'register' && password !== confirmPassword) {
+                        setMessage('Passwords do not match.');
+                        setMessageType('error');
+                        return;
+                    }
+
+                    try {
+                        if (type === 'login') {
+                            await login(email, password);
+                            setMessage('Login successful! Redirecting...');
+                            setMessageType('success');
+                            setTimeout(() => onClose(), 1500);
+                        } else if (type === 'register') {
+                            await register(email, password);
+                            setMessage('Registration successful! Redirecting...');
+                            setMessageType('success');
+                            setTimeout(() => onClose(), 1500);
+                        } else if (type === 'reset') {
+                            await resetPassword(email);
+                            setMessage('Password reset email sent. Check your inbox!');
+                            setMessageType('success');
+                        }
+                    } catch (err) {
+                        // Error is handled by the authError state from context
+                    }
+                };
+
+                const inputClasses = "w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition";
+                const passwordInputClasses = `${inputClasses} pr-10`;
+
+                return (
+                    React.createElement('div', { className: "fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4" },
+                        React.createElement('div', { className: "bg-white rounded-xl shadow-2xl p-8 w-full max-w-md relative animate-fade-in-up" },
+                            React.createElement('button', { onClick: onClose, className: "absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white transition duration-200" },
+                                React.createElement(X, { size: 24 })
+                            ),
+                            React.createElement('h2', { className: "auth-modal-title text-3xl font-bold text-center mb-6" },
+                                type === 'login' ? 'Welcome Back!' : type === 'register' ? 'Create Your Account' : 'Reset Password'
+                            ),
+
+                            message && (
+                                React.createElement('div', { className: `p-3 mb-4 rounded-lg text-sm ${messageType === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}` },
+                                    message
+                                )
+                            ),
+
+                            React.createElement('form', { onSubmit: handleSubmit, className: "space-y-4" },
+                                React.createElement('div', null,
+                                    React.createElement('label', { htmlFor: "email", className: "block text-sm font-medium mb-1" }, "Email"),
+                                    React.createElement('input', {
+                                        type: "email", id: "email", placeholder: "you@example.com",
+                                        className: inputClasses,
+                                        value: email, onChange: (e) => setEmail(e.target.value), required: true
+                                    })
+                                ),
+                                type !== 'reset' && (
+                                    React.createElement('div', null,
+                                        React.createElement('label', { htmlFor: "password", className: "block text-sm font-medium mb-1" }, "Password"),
+                                        React.createElement('div', { className: "relative" },
+                                            React.createElement('input', {
+                                                type: isPasswordVisible ? "text" : "password",
+                                                id: "password",
+                                                className: passwordInputClasses,
+                                                value: password,
+                                                onChange: (e) => setPassword(e.target.value),
+                                                placeholder: "Password",
+                                                required: true
+                                            }),
+                                            React.createElement('button', {
+                                                type: "button",
+                                                onClick: () => setIsPasswordVisible(!isPasswordVisible),
+                                                className: "absolute inset-y-0 right-0 px-3 flex items-center text-gray-500 dark:text-gray-400 hover:text-blue-600"
+                                            },
+                                                isPasswordVisible ? React.createElement(EyeOff, { size: 20 }) : React.createElement(Eye, { size: 20 })
+                                            )
+                                        )
+                                    )
+                                ),
+                                type === 'register' && (
+                                    React.createElement('div', null,
+                                        React.createElement('label', { htmlFor: "confirmPassword", className: "block text-sm font-medium mb-1" }, "Confirm Password"),
+                                         React.createElement('div', { className: "relative" },
+                                            React.createElement('input', {
+                                                type: isConfirmPasswordVisible ? "text" : "password",
+                                                id: "confirmPassword",
+                                                className: passwordInputClasses,
+                                                value: confirmPassword,
+                                                onChange: (e) => setConfirmPassword(e.target.value),
+                                                placeholder: "Confirm Password",
+                                                required: true
+                                            }),
+                                            React.createElement('button', {
+                                                type: "button",
+                                                onClick: () => setIsConfirmPasswordVisible(!isConfirmPasswordVisible),
+                                                className: "absolute inset-y-0 right-0 px-3 flex items-center text-gray-500 dark:text-gray-400 hover:text-blue-600"
+                                            },
+                                                isConfirmPasswordVisible ? React.createElement(EyeOff, { size: 20 }) : React.createElement(Eye, { size: 20 })
+                                            )
+                                        )
+                                    )
+                                ),
+
+                                React.createElement('button', {
+                                    type: "submit",
+                                    className: "w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+                                },
+                                    type === 'login' ? 'Login' : type === 'register' ? 'Register' : 'Send Reset Email'
+                                )
+                            ),
+
+                            React.createElement('div', { className: "auth-modal-helper-text mt-6 text-center" },
+                                type === 'login' && (
+                                    React.createElement(React.Fragment, null,
+                                        "Don't have an account?", ' ',
+                                        React.createElement('button', { onClick: () => onSwitchType('register'), className: "text-blue-600 dark:text-blue-400 hover:underline font-medium" },
+                                            "Register"
+                                        ),
+                                        React.createElement('br', null),
+                                        React.createElement('button', { onClick: () => onSwitchType('reset'), className: "text-blue-600 dark:text-blue-400 hover:underline font-medium mt-2" },
+                                            "Forgot Password?"
+                                        )
+                                    )
+                                ),
+                                type === 'register' && (
+                                    React.createElement(React.Fragment, null,
+                                        "Already have an account?", ' ',
+                                        React.createElement('button', { onClick: () => onSwitchType('login'), className: "text-blue-600 dark:text-blue-400 hover:underline font-medium" },
+                                            "Login"
+                                        )
+                                    )
+                                ),
+                                type === 'reset' && (
+                                    React.createElement(React.Fragment, null,
+                                        "Remembered your password?", ' ',
+                                        React.createElement('button', { onClick: () => onSwitchType('login'), className: "text-blue-600 dark:text-blue-400 hover:underline font-medium" },
+                                            "Login"
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                );
+            };
+
+            // --- Theme Context ---
+            const ThemeContext = createContext(null);
+
+            const ThemeProvider = ({ children }) => {
+                const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'system');
+
+                useEffect(() => {
+                    const applyTheme = () => {
+                        const isDarkMode = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                        if (isDarkMode) {
+                            document.documentElement.classList.add('dark');
+                        } else {
+                            document.documentElement.classList.remove('dark');
+                        }
+                    };
+
+                    applyTheme();
+                    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+                    const handleChange = () => { if (theme === 'system') applyTheme(); };
+                    mediaQuery.addEventListener('change', handleChange);
+                    return () => mediaQuery.removeEventListener('change', handleChange);
+                }, [theme]);
+
+                useEffect(() => {
+                    localStorage.setItem('theme', theme);
+                }, [theme]);
+
+                return (
+                    React.createElement(ThemeContext.Provider, { value: { theme, setTheme } },
+                        children
+                    )
+                );
+            };
+
+            // --- Consolidated Theme Switcher Dropdown Component ---
+            const ThemeSwitcherDropdown = ({ theme, setTheme }) => {
+                const [isOpen, setIsOpen] = useState(false);
+                const dropdownRef = useRef(null);
+                
+                const isEffectiveDarkMode = useMemo(() => {
+                    if (theme === 'dark') return true;
+                    if (theme === 'system' && typeof window !== 'undefined') {
+                        return window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    }
+                    return false;
+                }, [theme]);
+
+                const CurrentThemeIcon = useMemo(() => {
+                    if (theme === 'light') return Sun;
+                    if (theme === 'dark') return Moon;
+                    return Monitor;
+                }, [theme]);
+
+                useEffect(() => {
+                    const handleClickOutside = (event) => {
+                        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                            setIsOpen(false);
+                        }
+                    };
+                    document.addEventListener('mousedown', handleClickOutside);
+                    return () => document.removeEventListener('mousedown', handleClickOutside);
+                }, []);
+                
+                const iconColorClass = isEffectiveDarkMode ? 'text-white' : 'text-black';
+
+                return (
+                    React.createElement('div', { className: "relative", ref: dropdownRef },
+                        React.createElement('button', {
+                            onClick: () => setIsOpen(!isOpen),
+                            className: `flex items-center space-x-1 p-2 rounded-full bg-transparent ${iconColorClass} shadow-md hover:bg-black/10 dark:hover:bg-white/10 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50`
+                        },
+                            React.createElement(CurrentThemeIcon, { size: 20 }),
+                            React.createElement(ChevronDown, { size: 16, className: `transform transition-transform ${isOpen ? 'rotate-180' : 'rotate-0'}` })
+                        ),
+                        isOpen && (
+                            React.createElement('div', { className: `absolute right-0 mt-2 w-40 rounded-md shadow-lg py-1 z-50 animate-slide-down ${!isEffectiveDarkMode ? 'theme-dropdown-light-bg' : 'theme-dropdown-dark-bg'}` },
+                                React.createElement('button', {
+                                    onClick: () => { setTheme('light'); setIsOpen(false); },
+                                    className: "flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-900 hover:bg-blue-50 dark:text-gray-200 dark:hover:bg-gray-700"
+                                }, React.createElement(Sun, { size: 18 }), React.createElement('span', null, "Light")),
+                                React.createElement('button', {
+                                    onClick: () => { setTheme('dark'); setIsOpen(false); },
+                                    className: "flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-900 hover:bg-blue-50 dark:text-gray-200 dark:hover:bg-gray-700"
+                                }, React.createElement(Moon, { size: 18 }), React.createElement('span', null, "Dark")),
+                                React.createElement('button', {
+                                    onClick: () => { setTheme('system'); setIsOpen(false); },
+                                    className: "flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-900 hover:bg-blue-50 dark:text-gray-200 dark:hover:bg-gray-700"
+                                }, React.createElement(Monitor, { size: 18 }), React.createElement('span', null, "System"))
+                            )
+                        )
+                    )
+                );
+            };
+
+            // --- Header Component ---
+            const Header = ({ currentPage, onNavigate, onAuthClick, onLogout }) => {
+                const { user, isAuthReady } = useContext(AuthContext);
+                const { theme, setTheme } = useContext(ThemeContext);
+                const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+                const brandName = "Traders Sanctuary";
+                
+                const isEffectiveDarkMode = useMemo(() => {
+                    if (theme === 'dark') return true;
+                    if (theme === 'system' && typeof window !== 'undefined') {
+                        return window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    }
+                    return false;
+                }, [theme]);
+
+                const navItems = [
+                    { name: 'Home', icon: Home, page: 'landing' },
+                    { name: 'Dashboard', icon: BarChart, page: 'dashboard', authRequired: true },
+                    { name: 'Contact', icon: Mail, page: 'contact' },
+                    { name: 'Admin', icon: Settings, page: 'admin', authRequired: true, adminOnly: true },
+                ];
+
+                const closeMobileMenu = () => setIsMobileMenuOpen(false);
+                const handleNavClick = (page) => { onNavigate(page); closeMobileMenu(); };
+                const handleAuthClickAndClose = (type) => { onAuthClick(type); closeMobileMenu(); };
+                const handleLogoutAndClose = () => { onLogout(); closeMobileMenu(); };
+                
+                const AnimatedBrand = ({ inFooter = false }) => React.createElement('div', { className: `text-xl font-bold ${inFooter ? 'text-white' : ''}` },
+                    brandName.split('').map((char, index) => 
+                        React.createElement('span', {
+                            key: index,
+                            className: "jumping-letter",
+                            style: { animationDelay: `${index * 0.07}s` }
+                        }, char === ' ' ? '\u00A0' : char)
+                    )
+                );
+
+
+                return (
+                    React.createElement('header', { className: "shadow-lg py-2 sticky top-0 z-40 w-full" },
+                        React.createElement('div', { className: "container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16" },
+                            React.createElement('div', { className: "flex-shrink-0" },
+                                React.createElement('button', { onClick: () => handleNavClick('landing'), className: "flex items-center space-x-2" },
+                                    React.createElement(AnimatedBrand, null)
+                                )
+                            ),
+                            // Desktop Navigation
+                            React.createElement('nav', { className: "hidden md:flex items-center space-x-4" },
+                                navItems.map((item) => (
+                                    (!item.authRequired || (item.authRequired && user)) &&
+                                    (!item.adminOnly || (item.adminOnly && user && user.role === 'admin')) && (
+                                        React.createElement('button', {
+                                            key: item.page,
+                                            onClick: () => handleNavClick(item.page),
+                                            className: `flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200
+                                                ${currentPage === item.page
+                                                    ? (theme === 'light' ? 'light-mode-nav-link-active' : 'bg-gray-700 text-blue-300')
+                                                    : (theme === 'light' ? 'light-mode-nav-link-text light-mode-nav-link-hover' : 'text-gray-200 hover:bg-gray-700 hover:text-blue-300')}`
+                                        },
+                                            React.createElement(item.icon, { size: 20, className: `${theme === 'light' ? 'light-mode-nav-link-icon' : 'text-gray-400'}` }),
+                                            React.createElement('span', null, item.name)
+                                        )
+                                    )
+                                )),
+                                isAuthReady && (
+                                    user ? (
+                                        React.createElement('button', { onClick: onLogout, className: "ml-4 inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700" }, "Logout")
+                                    ) : (
+                                        React.createElement('div', { className: "ml-4 flex items-center space-x-2" },
+                                            React.createElement('button', { onClick: () => onAuthClick('login'), className: `px-4 py-2 text-sm font-medium transition-colors duration-200 ${theme === 'light' ? 'light-mode-nav-link-text light-mode-nav-link-hover' : 'text-gray-200 hover:text-blue-300'}` }, "Login"),
+                                            React.createElement('button', { onClick: () => onAuthClick('register'), className: "inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700" }, "Register")
+                                        )
+                                    )
+                                ),
+                                React.createElement(ThemeSwitcherDropdown, { theme, setTheme })
+                            ),
+                            // Mobile Menu Button (Hamburger)
+                            React.createElement('div', { className: "md:hidden flex items-center" },
+                                React.createElement(ThemeSwitcherDropdown, { theme, setTheme }),
+                                React.createElement('button', {
+                                    onClick: () => setIsMobileMenuOpen(!isMobileMenuOpen),
+                                    className: `ml-4 p-2 rounded-md ${isEffectiveDarkMode ? 'text-white' : 'text-black'}`
+                                },
+                                    isMobileMenuOpen ? React.createElement(X, { size: 24 }) : React.createElement(Menu, { size: 24 })
+                                )
+                            )
+                        ),
+                        // Mobile Menu Panel
+                        React.createElement('div', { className: `md:hidden mobile-menu ${isMobileMenuOpen ? 'mobile-menu-open' : ''}` },
+                            React.createElement('div', { className: "px-2 space-y-1 sm:px-3" },
+                                navItems.map((item) => (
+                                    (!item.authRequired || (item.authRequired && user)) &&
+                                    (!item.adminOnly || (item.adminOnly && user && user.role === 'admin')) && (
+                                        React.createElement('button', {
+                                            key: item.page,
+                                            onClick: () => handleNavClick(item.page),
+                                            className: `flex items-center space-x-3 px-3 py-2 rounded-md text-base font-medium w-full text-left
+                                                ${currentPage === item.page 
+                                                    ? (isEffectiveDarkMode ? 'bg-white/10 text-white' : 'mobile-menu-light-active') 
+                                                    : (isEffectiveDarkMode ? 'text-white/80 hover:bg-white/10' : 'mobile-menu-light-text')}`
+                                        },
+                                            React.createElement(item.icon, { size: 20 }),
+                                            React.createElement('span', null, item.name)
+                                        )
+                                    )
+                                )),
+                                React.createElement('div', { className: "border-t border-gray-700/50 my-2" }),
+                                isAuthReady && (
+                                    user ? (
+                                        React.createElement('button', { onClick: handleLogoutAndClose, className: `w-full text-left flex items-center space-x-3 px-3 py-2 text-base font-medium rounded-md ${isEffectiveDarkMode ? 'text-red-500 hover:bg-white/10' : 'text-red-600 mobile-menu-light-text'}` },
+                                            React.createElement(LogOut, { size: 20 }),
+                                            React.createElement('span', null, "Logout")
+                                        )
+                                    ) : (
+                                        React.createElement('div', { className: "space-y-1" },
+                                            React.createElement('button', { onClick: () => handleAuthClickAndClose('login'), className: `w-full text-left flex items-center space-x-3 px-3 py-2 text-base font-medium rounded-md ${isEffectiveDarkMode ? 'text-white/80 hover:bg-white/10' : 'mobile-menu-light-text'}` },
+                                                React.createElement(LogIn, { size: 20 }),
+                                                React.createElement('span', null, "Login")
+                                            ),
+                                            React.createElement('button', { onClick: () => handleAuthClickAndClose('register'), className: `w-full text-left flex items-center space-x-3 px-3 py-2 text-base font-medium rounded-md ${isEffectiveDarkMode ? 'text-white/80 hover:bg-white/10' : 'mobile-menu-light-text'}` },
+                                                React.createElement(UserPlus, { size: 20 }),
+                                                React.createElement('span', null, "Register")
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                );
+            };
+                            
+            // --- Footer Component ---
+            const Footer = () => {
+                const AnimatedBrand = ({ inFooter = false }) => React.createElement('div', { className: `text-xl font-bold ${inFooter ? 'text-white' : ''}` },
+                    "Traders Sanctuary".split('').map((char, index) => 
+                        React.createElement('span', {
+                            key: index,
+                            className: "jumping-letter",
+                            style: { 
+                                animationDelay: `${index * 0.07}s`,
+                                // Override jumping letter colors for footer consistency
+                                color: inFooter ? '#A7F3D0' : undefined 
+                            }
+                        }, char === ' ' ? '\u00A0' : char)
+                    )
+                );
+
+                return (
+                    React.createElement('footer', { className: "bg-gray-900 text-gray-300 py-10 px-6 md:px-12 mt-auto" },
+                        React.createElement('div', { className: "container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8" },
+                            // Column 1: Logo & Social
+                            React.createElement('div', { className: "flex flex-col items-center md:items-start space-y-4" },
+                                React.createElement('div', { className: "flex items-center space-x-2" },
+                                    React.createElement(AnimatedBrand, { inFooter: true })
+                                ),
+                                React.createElement('p', { className: "text-sm text-center md:text-left max-w-xs" }, "Join a vibrant community of forex traders, sharing knowledge and strategies to achieve financial freedom."),
+                                React.createElement('div', { className: "flex space-x-4" },
+                                    React.createElement('a', { href: "#", className: "text-gray-400 hover:text-pink-500 transition-colors duration-200" }, React.createElement(Instagram, { size: 24 })),
+                                    React.createElement('a', { href: "#", className: "text-gray-400 hover:text-indigo-500 transition-colors duration-200" }, React.createElement(MessageSquare, { size: 24 })),
+                                    React.createElement('a', { href: "#", className: "text-gray-400 hover:text-blue-400 transition-colors duration-200" }, React.createElement(Send, { size: 24 }))
+                                )
+                            ),
+                            // Column 2: Quick Links
+                            React.createElement('div', { className: "text-center md:text-left" },
+                                React.createElement('h4', { className: "text-white text-lg font-semibold mb-4" }, "Quick Links"),
+                                React.createElement('ul', { className: "space-y-2" },
+                                    React.createElement('li', null, React.createElement('a', { href: "#", className: "hover:text-blue-400" }, "About Us")),
+                                    React.createElement('li', null, React.createElement('a', { href: "#", className: "hover:text-blue-400" }, "Services")),
+                                    React.createElement('li', null, React.createElement('a', { href: "#", className: "hover:text-blue-400" }, "Privacy Policy")),
+                                    React.createElement('li', null, React.createElement('a', { href: "#", className: "hover:text-blue-400" }, "Terms of Service"))
+                                )
+                            ),
+                            // Column 3: Contact & Info
+                            React.createElement('div', { className: "text-center md:text-left" },
+                                React.createElement('h4', { className: "text-white text-lg font-semibold mb-4" }, "Get in Touch"),
+                                React.createElement('address', { className: "not-italic space-y-2" },
+                                    React.createElement('p', { className: "flex items-center justify-center md:justify-start space-x-2" },
+                                        React.createElement(Mail, { size: 18, className: "text-gray-500" }),
+                                        React.createElement('a', { href: "mailto:info@traderssanctuary.com", className: "hover:text-blue-400" }, "info@traderssanctuary.com")
+                                    ),
+                                    React.createElement('p', null, "123 Forex Lane, Financial District, New York, NY 10001")
+                                )
+                            )
+                        ),
+                        React.createElement('div', { className: "mt-8 pt-8 border-t border-gray-700 text-center text-sm" },
+                            React.createElement('p', null, "\u00A9 2025 Traders Sanctuary. All rights reserved.")
+                        )
+                    )
+                );
+            };
+
+            // --- Forex Animation Component (using Three.js) ---
+            const ForexAnimation = ({ theme }) => {
+                const mountRef = useRef(null);
+                const isEffectiveDarkMode = useMemo(() => {
+                    if (theme === 'dark') return true;
+                    if (theme === 'system' && typeof window !== 'undefined') {
+                        return window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    }
+                    return false;
+                }, [theme]);
+
+                useEffect(() => {
+                    if (!mountRef.current || typeof window === 'undefined') return;
+
+                    const scene = new THREE.Scene();
+                    const camera = new THREE.PerspectiveCamera(60, mountRef.current.clientWidth / mountRef.current.clientHeight, 1, 1000);
+                    camera.position.z = 1;
+
+                    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+                    renderer.setSize(mountRef.current.clientWidth, mountRef.current.clientHeight);
+                    mountRef.current.appendChild(renderer.domElement);
+
+                    const particles = [];
+                    const particleCount = 100;
+                    const pointsGeometry = new THREE.BufferGeometry();
+                    const positions = new Float32Array(particleCount * 3);
+
+                    for (let i = 0; i < particleCount; i++) {
+                        const x = (Math.random() - 0.5) * 2;
+                        const y = (Math.random() - 0.5) * 2;
+                        const z = (Math.random() - 0.5) * 2;
+                        positions[i * 3] = x;
+                        positions[i * 3 + 1] = y;
+                        positions[i * 3 + 2] = z;
+                        particles.push({
+                            position: new THREE.Vector3(x, y, z),
+                            velocity: new THREE.Vector3((Math.random() - 0.5) * 0.0005, (Math.random() - 0.5) * 0.0005, 0)
+                        });
+                    }
+                    pointsGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+                    
+                    const particleColor = isEffectiveDarkMode ? 0x00ffff : 0x1e3a8a;
+                    const pointsMaterial = new THREE.PointsMaterial({ color: particleColor, size: 3, sizeAttenuation: false });
+                    const points = new THREE.Points(pointsGeometry, pointsMaterial);
+                    scene.add(points);
+
+                    const linesGeometry = new THREE.BufferGeometry();
+                    const linePositions = new Float32Array(particleCount * particleCount * 3);
+                    linesGeometry.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
+                    
+                    const lineColor = isEffectiveDarkMode ? 0x005050 : 0x93c5fd;
+                    const linesMaterial = new THREE.LineBasicMaterial({ color: lineColor, transparent: true, opacity: 0 });
+                    const lines = new THREE.LineSegments(linesGeometry, linesMaterial);
+                    scene.add(lines);
+
+                    const mouse = new THREE.Vector2(-10, -10);
+                    const onMouseMove = (event) => {
+                        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+                        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+                    };
+                    window.addEventListener('mousemove', onMouseMove);
+
+                    let animationFrameId;
+                    const animate = () => {
+                        animationFrameId = requestAnimationFrame(animate);
+                        let lineVertexIndex = 0;
+                        const posAttr = points.geometry.attributes.position;
+                        
+                        particles.forEach((p, i) => {
+                            p.position.add(p.velocity);
+                            if (p.position.x < -1 || p.position.x > 1) p.velocity.x *= -1;
+                            if (p.position.y < -1 || p.position.y > 1) p.velocity.y *= -1;
+
+                            posAttr.setXYZ(i, p.position.x, p.position.y, p.position.z);
+                        });
+
+                        for (let i = 0; i < particleCount; i++) {
+                            for (let j = i + 1; j < particleCount; j++) {
+                                const p1 = particles[i].position;
+                                const p2 = particles[j].position;
+                                const dist = p1.distanceTo(p2);
+                                if (dist < 0.3) {
+                                    lines.geometry.attributes.position.setXYZ(lineVertexIndex++, p1.x, p1.y, p1.z);
+                                    lines.geometry.attributes.position.setXYZ(lineVertexIndex++, p2.x, p2.y, p2.z);
+                                }
+                            }
+                        }
+                        
+                        // Interaction with mouse
+                        const mouseVec3 = new THREE.Vector3(mouse.x, mouse.y, 0.5);
+                        mouseVec3.unproject(camera);
+                        const dir = mouseVec3.sub(camera.position).normalize();
+                        const distance = -camera.position.z / dir.z;
+                        const mousePos = camera.position.clone().add(dir.multiplyScalar(distance));
+                        
+                        if(mouse.x !== -10){
+                           for (let i = 0; i < particleCount; i++) {
+                                const p = particles[i].position;
+                                const distToMouse = p.distanceTo(mousePos);
+                                if (distToMouse < 0.5) {
+                                    lines.geometry.attributes.position.setXYZ(lineVertexIndex++, p.x, p.y, p.z);
+                                    lines.geometry.attributes.position.setXYZ(lineVertexIndex++, mousePos.x, mousePos.y, mousePos.z);
+                                }
+                           }
+                        }
+
+                        lines.geometry.setDrawRange(0, lineVertexIndex);
+                        lines.geometry.attributes.position.needsUpdate = true;
+                        posAttr.needsUpdate = true;
+                        
+                        // Fade in animation for lines
+                        if (lines.material.opacity < 1) {
+                            lines.material.opacity += 0.005;
+                        }
+
+                        camera.position.x += (mouse.x * 0.5 - camera.position.x) * 0.05;
+                        camera.position.y += (-mouse.y * 0.5 - camera.position.y) * 0.05;
+                        camera.lookAt(scene.position);
+                        
+                        renderer.render(scene, camera);
+                    };
+
+                    const onWindowResize = () => {
+                        if (mountRef.current) {
+                            camera.aspect = mountRef.current.clientWidth / mountRef.current.clientHeight;
+                            camera.updateProjectionMatrix();
+                            renderer.setSize(mountRef.current.clientWidth, mountRef.current.clientHeight);
+                        }
+                    };
+
+                    animate();
+                    window.addEventListener('resize', onWindowResize);
+
+                    return () => {
+                        window.removeEventListener('mousemove', onMouseMove);
+                        window.removeEventListener('resize', onWindowResize);
+                        cancelAnimationFrame(animationFrameId);
+                        if (mountRef.current && renderer.domElement) {
+                            mountRef.current.removeChild(renderer.domElement);
+                        }
+                    };
+                }, [isEffectiveDarkMode]);
+
+                return React.createElement('div', { ref: mountRef, className: "forex-animation-canvas" });
+            };
+
+
+            // --- Home Page Component (Renamed to LandingPage for clarity) ---
+            const LandingPage = ({ onAuthClick }) => {
+                const [testimonials, setTestimonials] = useState([]);
+                const [certificates, setCertificates] = useState([]);
+                const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
+                const { theme } = useContext(ThemeContext);
+                const [newsletterEmail, setNewsletterEmail] = useState('');
+                const [newsletterMessage, setNewsletterMessage] = useState('');
+                const [newsletterMessageType, setNewsletterMessageType] = useState('');
+
+                useEffect(() => {
+                    // Fetch testimonials from Firebase
+                    if (db) {
+                        const testimonialsCollectionRef = collection(db, `artifacts/${appId}/public/data/testimonials`);
+                        const qTestimonials = query(testimonialsCollectionRef, where("approved", "==", true));
+                        const unsubscribeTestimonials = onSnapshot(qTestimonials, (snapshot) => {
+                            const fetchedTestimonials = snapshot.docs
+                                .map(doc => ({ id: doc.id, ...doc.data() }));
+                            setTestimonials(fetchedTestimonials);
+                        }, (error) => console.error("Error fetching testimonials:", error));
+                         return () => unsubscribeTestimonials();
+                    }
+                }, [db]);
+                
+                useEffect(() => {
+                    // Fetch certificates from the local JSON file
+                    fetch(`certificates.json?v=${Date.now()}`) // Bust cache
+                        .then(response => {
+                            if (!response.ok) {
+                                return []; // Return empty array if file not found (404)
+                            }
+                            return response.json();
+                        })
+                        .then(data => setCertificates(data))
+                        .catch(error => {
+                            console.error("Could not fetch certificates.json:", error);
+                            setCertificates([]); // Set to empty on error
+                        });
+                }, []);
+
+                useEffect(() => {
+                    if (testimonials.length > 1) {
+                        const interval = setInterval(() => {
+                            setCurrentTestimonialIndex((prevIndex) => (prevIndex + 1) % testimonials.length);
+                        }, 5000);
+                        return () => clearInterval(interval);
+                    }
+                }, [testimonials]);
+                
+                const handleSubscriptionSubmit = async (e) => {
+                    e.preventDefault();
+                    setNewsletterMessage('');
+                    if (!newsletterEmail) {
+                        setNewsletterMessage('Email is required.');
+                        setNewsletterMessageType('error');
+                        return;
+                    }
+                    try {
+                        await addDoc(collection(db, `artifacts/${appId}/public/data/subscriptions`), {
+                            email: newsletterEmail,
+                            subscribedAt: new Date().toISOString()
+                        });
+                        setNewsletterMessage('Thank you for subscribing!');
+                        setNewsletterMessageType('success');
+                        setNewsletterEmail('');
+                    } catch (error) {
+                        console.error("Subscription error: ", error);
+                        setNewsletterMessage('Failed to subscribe. Please try again.');
+                        setNewsletterMessageType('error');
+                    }
+                };
+
+                return (
+                    React.createElement('main', { className: "flex-grow bg-gray-50 text-gray-800" },
+                        React.createElement('section', { className: "relative bg-blue-50 py-24 md:py-32 overflow-hidden dark:bg-black min-h-screen flex flex-col justify-center" },
+                            React.createElement(ForexAnimation, { theme: theme }),
+                            React.createElement('div', { className: "absolute inset-0 z-5 bg-black/5 dark:bg-black/20" }),
+                            React.createElement('div', { className: "container mx-auto px-6 md:px-12 relative z-10 text-center" },
+                                React.createElement('h2', { className: "text-5xl md:text-7xl font-extrabold leading-tight mb-6 animate-fade-in-down text-blue-900 dark:text-white" },
+                                    "Master Trading. ", React.createElement('span', { className: "text-blue-700 dark:text-white" }, "Together.")
+                                ),
+                                React.createElement('p', { className: "text-xl md:text-2xl mb-10 max-w-3xl mx-auto opacity-90 animate-fade-in-up text-gray-800 dark:text-gray-100" },
+                                    "Unlock your potential with market education, psychological coaching, and a vibrant community of supportive traders."
+                                ),
+                                React.createElement('div', { className: "flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6 animate-fade-in-up delay-200" },
+                                    React.createElement('button', {
+                                        onClick: () => onAuthClick('register'),
+                                        className: "px-8 py-4 bg-green-500 text-white text-xl font-bold rounded-full shadow-lg hover:bg-green-600 transform hover:scale-105 transition duration-300 focus:outline-none focus:ring-4 focus:ring-green-400"
+                                    }, "Join the Community"),
+                                    React.createElement('button', {
+                                        onClick: () => onAuthClick('register'),
+                                        className: "px-8 py-4 bg-blue-500 text-white text-xl font-bold rounded-full shadow-lg hover:bg-blue-600 transform hover:scale-105 transition duration-300 focus:outline-none focus:ring-4 focus:ring-blue-400"
+                                    }, "Create Account")
+                                )
+                            )
+                        ),
+
+                        React.createElement('section', { className: "py-16 md:py-24 bg-white px-6 md:px-12" },
+                            React.createElement('div', { className: "container mx-auto text-center" },
+                                React.createElement('h3', { className: "text-4xl font-bold text-blue-800 mb-8" }, "What is Traders Sanctuary?"),
+                                React.createElement('p', { className: "text-lg md:text-xl max-w-4xl mx-auto text-gray-700 leading-relaxed" },
+                                    "Traders Sanctuary is your dedicated platform for building a successful trading career. We focus on a holistic approach, combining deep market education, psychological strategies for traders, and a supportive network of peers. Whether you're a beginner or an experienced pro, our resources are designed to elevate your trading journey."
+                                )
+                            )
+                        ),
+                        
+                        React.createElement('section', { className: "py-16 md:py-24 bg-white px-6 md:px-12" },
+                            React.createElement('div', { className: "container mx-auto" },
+                                React.createElement('h3', { className: "text-4xl font-bold text-blue-800 text-center mb-12" }, "Our Core Features"),
+                                React.createElement('div', { className: "grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12" },
+                                    React.createElement('div', { className: "bg-white rounded-xl shadow-lg p-8 text-center transform hover:scale-105 transition duration-300 border-t-4 border-blue-600" },
+                                        React.createElement(BookOpen, { size: 64, className: "text-blue-600 mx-auto mb-6" }),
+                                        React.createElement('h4', { className: "text-2xl font-semibold text-gray-900 dark:text-blue-300 mb-4" }, "Market Education"),
+                                        React.createElement('p', { className: "text-gray-700" }, "Access a comprehensive library of educational materials, webinars, and tutorials to build your knowledge base.")
+                                    ),
+                                    React.createElement('div', { className: "bg-white rounded-xl shadow-lg p-8 text-center transform hover:scale-105 transition duration-300 border-t-4 border-blue-600" },
+                                        React.createElement(Award, { size: 64, className: "text-blue-600 mx-auto mb-6" }),
+                                        React.createElement('h4', { className: "text-2xl font-semibold text-gray-900 dark:text-blue-300 mb-4" }, "Psychological Talks"),
+                                        React.createElement('p', { className: "text-gray-700" }, "Join sessions focused on the trading mindset, discipline, and emotional control to overcome market pressures.")
+                                    ),
+                                    React.createElement('div', { className: "bg-white rounded-xl shadow-lg p-8 text-center transform hover:scale-105 transition duration-300 border-t-4 border-blue-600" },
+                                        React.createElement(Users, { size: 64, className: "text-blue-600 mx-auto mb-6" }),
+                                        React.createElement('h4', { className: "text-2xl font-semibold text-gray-900 dark:text-blue-300 mb-4" }, "Community Support"),
+                                        React.createElement('p', { className: "text-gray-700" }, "Connect with a thriving community of traders, share ideas, and grow together in a supportive environment.")
+                                    )
+                                )
+                            )
+                        ),
+
+                        certificates.length > 0 && React.createElement('section', { className: "py-16 bg-blue-50" },
+                            React.createElement('div', { className: "container mx-auto text-center" },
+                                React.createElement('h3', { className: "text-4xl font-bold text-blue-800 mb-12" }, "Our Successful Members"),
+                                React.createElement('div', { className: "relative w-full overflow-hidden" },
+                                    React.createElement('div', { className: "marquee" },
+                                        [...certificates, ...certificates].map((fileName, index) => 
+                                            React.createElement('img', { 
+                                                key: `${fileName}-${index}`, 
+                                                src: `funded certificates/${fileName}`, 
+                                                alt: `Certificate ${fileName}` 
+                                            })
+                                        )
+                                    )
+                                )
+                            )
+                        ),
+
+                        React.createElement('section', { className: "py-16 md:py-24 bg-white px-6 md:px-12" },
+                            React.createElement('div', { className: "container mx-auto text-center" },
+                                React.createElement('h3', { className: "text-4xl font-bold text-blue-800 mb-12" }, "What Our Members Say"),
+                                React.createElement('div', { className: "relative overflow-hidden" },
+                                    testimonials.length > 0 ? (
+                                        React.createElement('div', { className: "flex transition-transform duration-500 ease-in-out", style: { transform: `translateX(-${currentTestimonialIndex * 100}%)` } },
+                                            testimonials.map((testimonial) => (
+                                                React.createElement('div', { key: testimonial.id, className: "w-full flex-shrink-0 p-4" },
+                                                    React.createElement('div', { className: "bg-blue-50 rounded-xl shadow-md p-8 max-w-2xl mx-auto" },
+                                                        React.createElement('p', { className: "text-lg italic text-gray-700 mb-6" }, `"${testimonial.content}"`),
+                                                        React.createElement('p', { className: "font-semibold text-blue-800" }, `- ${testimonial.author}`)
+                                                    )
+                                                )
+                                            ))
+                                        )
+                                    ) : (
+                                        React.createElement('p', { className: "text-gray-500 italic" }, "No testimonials yet. Be the first to share your experience!")
+                                    ),
+                                    testimonials.length > 1 && (
+                                        React.createElement('div', { className: "absolute bottom-4 left-0 right-0 flex justify-center space-x-2" },
+                                            testimonials.map((_, index) => (
+                                                React.createElement('button', {
+                                                    key: index,
+                                                    onClick: () => setCurrentTestimonialIndex(index),
+                                                    className: `w-3 h-3 rounded-full ${currentTestimonialIndex === index ? 'bg-blue-600' : 'bg-gray-300'} transition-colors duration-300`
+                                                })
+                                            ))
+                                        )
+                                    )
+                                )
+                            )
+                        ),
+
+                        React.createElement('section', { className: "py-16 md:py-24 bg-gradient-to-r from-blue-800 to-blue-600 text-white px-6 md:px-12" },
+                            React.createElement('div', { className: "container mx-auto text-center" },
+                                React.createElement('h3', { className: "text-4xl font-bold mb-6" }, "Stay Updated with Traders Sanctuary"),
+                                React.createElement('p', { className: "text-xl mb-8 opacity-90" }, "Subscribe to our newsletter for the latest market insights, trading tips, and platform updates."),
+                                React.createElement('form', { onSubmit: handleSubscriptionSubmit, className: "max-w-xl mx-auto flex flex-col sm:flex-row gap-4" },
+                                    React.createElement('input', {
+                                        type: "email",
+                                        placeholder: "Enter your email address",
+                                        className: "flex-grow p-4 rounded-full border-2 border-white bg-white bg-opacity-20 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-300",
+                                        value: newsletterEmail,
+                                        onChange: (e) => setNewsletterEmail(e.target.value),
+                                        required: true
+                                    }),
+                                    React.createElement('button', {
+                                        type: "submit",
+                                        className: "px-8 py-4 bg-green-500 text-white font-bold rounded-full shadow-lg hover:bg-green-600 transform hover:scale-105 transition duration-300 focus:outline-none focus:ring-4 focus:ring-green-400"
+                                    }, "Subscribe")
+                                ),
+                                newsletterMessage && React.createElement('p', { 
+                                    className: `text-sm mt-4 font-bold ${newsletterMessageType === 'success' ? 'text-green-300' : 'text-yellow-300'}` 
+                                }, newsletterMessage),
+                                React.createElement('p', { className: "text-sm mt-4 opacity-80" }, "We respect your privacy and will not share your email.")
+                            )
+                        )
+                    )
+                );
+            };
+            // --- Pagination Component ---
+            const PaginationControls = ({ currentPage, totalPages, onPageChange, totalEntries, entriesPerPage }) => {
+                if (totalPages <= 1) {
+                    return null;
+                }
+                const startEntry = (currentPage - 1) * entriesPerPage + 1;
+                const endEntry = Math.min(currentPage * entriesPerPage, totalEntries);
+
+                return React.createElement('div', { className: "flex justify-between items-center mt-4 p-2" },
+                    React.createElement('span', { className: "text-sm text-gray-700 dark:text-gray-300" }, `Showing ${startEntry}-${endEntry} of ${totalEntries} entries`),
+                    React.createElement('div', { className: "flex space-x-2" },
+                        React.createElement('button', {
+                            onClick: () => onPageChange(currentPage - 1),
+                            disabled: currentPage === 1,
+                            className: "px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:bg-gray-500 disabled:cursor-not-allowed transition-colors"
+                        }, 'Previous'),
+                        React.createElement('span', { className: "text-sm text-gray-700 dark:text-gray-300 px-4 py-2" }, `Page ${currentPage} of ${totalPages}`),
+                        React.createElement('button', {
+                            onClick: () => onPageChange(currentPage + 1),
+                            disabled: currentPage === totalPages,
+                            className: "px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:bg-gray-500 disabled:cursor-not-allowed transition-colors"
+                        }, 'Next')
+                    )
+                );
+            };
+
+            // --- Contact Page Component ---
+            const ContactPage = () => {
+                const { theme } = useContext(ThemeContext);
+                const formSpreeUrl = "https://formspree.io/f/xgvzygow"; // <-- PASTE YOUR URL HERE
+
+                const inputClasses = "w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition";
+                const labelClasses = "block text-sm font-medium mb-2";
+                
+                return (
+                    React.createElement('main', { 
+                        className: "flex-grow dark:bg-gray-900 py-10 px-6 md:px-12"
+                    },
+                        React.createElement('div', { className: "container mx-auto max-w-2xl bg-white rounded-xl shadow-lg p-8" },
+                            React.createElement('h2', { className: "text-4xl font-bold text-blue-800 text-center mb-8" }, "Contact Us"),
+                            React.createElement('p', { className: "text-lg text-gray-700 text-center mb-8" }, "Have a question? Fill out the form below and we'll get back to you."),
+                            
+                            // This is now a standard HTML form that submits to Formspree
+                            React.createElement('form', { action: formSpreeUrl, method: "POST", className: "space-y-6" },
+                                React.createElement('div', null, 
+                                    React.createElement('label', { htmlFor: "name", className: labelClasses }, "Name"), 
+                                    React.createElement('input', { type: "text", id: "name", name: "name", className: inputClasses, required: true })
+                                ),
+                                React.createElement('div', null, 
+                                    React.createElement('label', { htmlFor: "email", className: labelClasses }, "Email"), 
+                                    React.createElement('input', { type: "email", id: "email", name: "email", className: inputClasses, required: true })
+                                ),
+                                React.createElement('div', null, 
+                                    React.createElement('label', { htmlFor: "subject", className: labelClasses }, "Subject"), 
+                                    React.createElement('input', { type: "text", id: "subject", name: "subject", className: inputClasses, required: true })
+                                ),
+                                React.createElement('div', null, 
+                                    React.createElement('label', { htmlFor: "message", className: labelClasses }, "Message"), 
+                                    React.createElement('textarea', { id: "message", name: "message", rows: "6", className: inputClasses, required: true })
+                                ),
+                                React.createElement('button', { type: "submit", className: "w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 flex items-center justify-center space-x-2" }, 
+                                    React.createElement(Send, { size: 20 }), 
+                                    React.createElement('span', null, "Send Message")
+                                )
+                            )
+                        )
+                    )
+                );
+            };
+
+            // --- Dashboard Component (Authenticated Area) ---
+            const Dashboard = ({ onNavigate }) => { // <-- Added onNavigate
+                const { user, isAuthReady } = useContext(AuthContext);
+                const [announcements, setAnnouncements] = useState([]);
+                const [message, setMessage] = useState('');
+                const [messageType, setMessageType] = useState('');
+                const [testimonialAuthor, setTestimonialAuthor] = useState('');
+                const [testimonialContent, setTestimonialContent] = useState('');
+                const [studyMaterials, setStudyMaterials] = useState([]);
+                const [displayName, setDisplayName] = useState('');
+                const [isEditingProfile, setIsEditingProfile] = useState(false);
+                const [hasSubmittedTestimonial, setHasSubmittedTestimonial] = useState(null);
+
+                const [studyMaterialsPage, setStudyMaterialsPage] = useState(1);
+                const [tradingNotesPage, setTradingNotesPage] = useState(1);
+                const [announcementsPage, setAnnouncementsPage] = useState(1);
+                const itemsPerPage = 11;
+
+                const [tradingNotes, setTradingNotes] = useState([]);
+                const [newNoteTitle, setNewNoteTitle] = useState('');
+                const [newNoteContent, setNewNoteContent] = useState('');
+                const [editingNoteId, setEditingNoteId] = useState(null);
+                
+                useEffect(() => {
+                    if (user) {
+                        setDisplayName(user.displayName || '');
+                        setTestimonialAuthor(user.displayName || '');
+                    }
+                }, [user]);
+
+                useEffect(() => {
+                    if (message && messageType === 'success') {
+                        const timer = setTimeout(() => {
+                            setMessage('');
+                            setMessageType('');
+                        }, 4000);
+                        return () => clearTimeout(timer);
+                    }
+                }, [message, messageType]);
+                
+                useEffect(() => {
+                    fetch(`get_study_materials.php?v=${Date.now()}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                            setStudyMaterials(data);
+                        })
+                        .catch(error => {
+                            console.error("Error fetching study materials:", error);
+                            setMessage("Failed to load study materials.");
+                            setMessageType('error');
+                        });
+                }, []);
+
+                useEffect(() => {
+                    if (!db || !isAuthReady) return;
+                    let unsubscribeTestimonialsCheck = () => {};
+
+                    if(user) {
+                         const testimonialsQuery = query(collection(db, `artifacts/${appId}/public/data/testimonials`), where("userId", "==", user.uid));
+                         unsubscribeTestimonialsCheck = onSnapshot(testimonialsQuery, (snapshot) => {
+                            setHasSubmittedTestimonial(!snapshot.empty);
+                        }, (error) => {
+                            console.error("Error checking for existing testimonial:", error);
+                            setHasSubmittedTestimonial(false);
+                        });
+                    }
+
+                    const announcementsCollectionRef = collection(db, `artifacts/${appId}/public/data/announcements`);
+                    const unsubscribeAnnouncements = onSnapshot(announcementsCollectionRef, (snapshot) => {
+                        const liveAnnouncements = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                        setAnnouncements(liveAnnouncements);
+                    }, (error) => { console.error("Error fetching announcements:", error); setMessage("Failed to load announcements."); setMessageType('error'); });
+
+                    return () => {
+                        unsubscribeAnnouncements();
+                        unsubscribeTestimonialsCheck();
+                    };
+                }, [db, isAuthReady, user]);
+
+                useEffect(() => {
+                    if (!db || !user?.uid || !isAuthReady) return;
+                    const notesCollectionRef = collection(db, `artifacts/${appId}/users/${user.uid}/trading_notes`);
+                    const unsubscribeNotes = onSnapshot(notesCollectionRef, (snapshot) => {
+                        setTradingNotes(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
+                    }, (error) => { console.error("Error fetching trading notes:", error); setMessage("Failed to load trading notes."); setMessageType('error'); });
+                    return () => unsubscribeNotes();
+                }, [db, user?.uid, isAuthReady]);
+
+                const handleProfileUpdate = async (e) => {
+                    e.preventDefault();
+                    if (!displayName) { setMessage("Display Name cannot be empty."); setMessageType('error'); return; }
+                    if (!user?.uid) { setMessage("You must be logged in."); setMessageType('error'); return; }
+                    try {
+                        const userProfileRef = doc(db, `artifacts/${appId}/users/${user.uid}/profile/data`);
+                        await updateDoc(userProfileRef, { displayName: displayName });
+                        setMessage("Profile updated successfully!");
+                        setMessageType('success');
+                        setIsEditingProfile(false);
+                    } catch (error) {
+                        console.error("Error updating profile:", error);
+                        setMessage("Failed to update profile: " + error.message);
+                        setMessageType('error');
+                    }
+                };
+                
+                const ProfileDetailItem = ({ label, value }) => (
+                     React.createElement('div', { className: "py-2 sm:grid sm:grid-cols-3 sm:gap-4" },
+                        React.createElement('dt', { className: "text-sm font-medium text-gray-500 dark:text-gray-400" }, label),
+                        React.createElement('dd', { className: "mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 break-words" }, value)
+                    )
+                );
+
+                const handleSubmitTestimonial = async (e) => {
+                    e.preventDefault();
+                    if (!window.confirm("You can only submit a testimonial once. Are you sure you want to proceed?")) {
+                        return;
+                    }
+                    if (!testimonialAuthor || !testimonialContent) { setMessage("Please fill in all fields."); setMessageType('error'); return; }
+                    if (!user?.uid) { setMessage("You must be logged in."); setMessageType('error'); return; }
+                    try {
+                        await addDoc(collection(db, `artifacts/${appId}/public/data/testimonials`), {
+                            author: testimonialAuthor,
+                            content: testimonialContent,
+                            createdAt: new Date().toISOString(),
+                            userId: user.uid,
+                            approved: false,
+                        });
+                        setMessage("Testimonial submitted! It will appear after admin approval.");
+                        setMessageType('success');
+                        setTestimonialContent('');
+                    }
+                    catch (error) {
+                        console.error("Error submitting testimonial:", error);
+                        setMessage("Failed to submit testimonial: " + error.message);
+                        setMessageType('error');
+                    }
+                };
+
+                const handleAddUpdateNote = async () => {
+                    if (!newNoteTitle || !newNoteContent) { setMessage("Please fill in title and content."); setMessageType('error'); return; }
+                    if (!user?.uid) { setMessage("You must be logged in."); setMessageType('error'); return; }
+                    try {
+                        if (editingNoteId) {
+                            await updateDoc(doc(db, `artifacts/${appId}/users/${user.uid}/trading_notes`, editingNoteId), {
+                                title: newNoteTitle,
+                                content: newNoteContent,
+                                updatedAt: new Date().toISOString(),
+                            });
+                            setMessage("Note updated successfully!");
+                        } else {
+                            await addDoc(collection(db, `artifacts/${appId}/users/${user.uid}/trading_notes`), {
+                                title: newNoteTitle,
+                                content: newNoteContent,
+                                createdAt: new Date().toISOString(),
+                                userId: user.uid,
+                            });
+                            setMessage("Note added successfully!");
+                        }
+                        setMessageType('success');
+                        setNewNoteTitle('');
+                        setNewNoteContent('');
+                        setEditingNoteId(null);
+                    }
+                    catch (error) {
+                        console.error("Error saving note:", error);
+                        setMessage("Failed to save note: " + error.message);
+                        setMessageType('error');
+                    }
+                };
+
+                const handleEditNote = (note) => { setNewNoteTitle(note.title); setNewNoteContent(note.content); setEditingNoteId(note.id); };
+
+                const handleDeleteNote = async (noteId) => {
+                    if (!window.confirm("Are you sure?")) return;
+                    if (!user?.uid) { setMessage("You must be logged in."); setMessageType('error'); return; }
+                    try {
+                        await deleteDoc(doc(db, `artifacts/${appId}/users/${user.uid}/trading_notes`, noteId));
+                        setMessage("Note deleted successfully!");
+                        setMessageType('success');
+                    }
+                    catch (error) {
+                        console.error("Error deleting note:", error);
+                        setMessage("Failed to delete note: " + error.message);
+                        setMessageType('error');
+                    }
+                };
+
+                const paginatedStudyMaterials = useMemo(() => studyMaterials.slice((studyMaterialsPage - 1) * itemsPerPage, studyMaterialsPage * itemsPerPage), [studyMaterials, studyMaterialsPage]);
+                const paginatedTradingNotes = useMemo(() => tradingNotes.slice((tradingNotesPage - 1) * itemsPerPage, tradingNotesPage * itemsPerPage), [tradingNotes, tradingNotesPage]);
+                const paginatedAnnouncements = useMemo(() => announcements.slice((announcementsPage - 1) * itemsPerPage, announcementsPage * itemsPerPage), [announcements, announcementsPage]);
+
+                const inputClasses = "w-full p-2 border rounded-md mb-2";
+                const largeInputClasses = "w-full p-3 border rounded-lg";
+
+                if (!isAuthReady) return React.createElement('div', { className: "flex justify-center items-center h-screen bg-gray-100" }, "Loading dashboard...");
+                if (!user) return React.createElement('div', { className: "flex flex-col justify-center items-center h-screen bg-gray-100 p-4 text-center" }, React.createElement('h2', { className: "text-3xl font-bold text-red-600 mb-4" }, "Access Denied"), React.createElement('p', { className: "text-lg text-gray-700" }, "Please log in to view the dashboard."));
+
+                return (
+                    React.createElement('main', { className: "flex-grow bg-gray-100 dashboard-main-bg py-10 px-6 md:px-12" },
+                        React.createElement('div', { className: "container mx-auto" },
+                            React.createElement('h2', { className: "text-4xl font-bold text-blue-800 mb-8" }, "Welcome, ", user.displayName || user.email.split('@')[0], "!"),
+                            message && React.createElement(MessageModal, { message: message, type: messageType, onClose: () => setMessage(''), showCloseButton: messageType !== 'success' }),
+                            React.createElement('div', { className: "space-y-8" },
+                                // UPDATED: This whole block is now conditional
+                                user.role !== 'premium' && (
+                                    React.createElement('div', { className: "bg-gradient-to-r from-purple-800 to-purple-600 text-white rounded-xl shadow-lg p-8 text-center" },
+                                        React.createElement('h3', { className: "text-3xl font-bold mb-4" }, "Unlock Premium Features!"),
+                                        React.createElement('p', { className: "text-xl mb-6" }, "Access exclusive signals, advanced strategies, and personalized analytics."),
+                                        React.createElement('button', {
+                                            onClick: () => onNavigate('premium'), // <-- This navigates to our new page
+                                            className: "px-8 py-4 bg-yellow-400 text-purple-900 font-bold rounded-full shadow-lg hover:bg-yellow-500 transform hover:scale-105 transition-transform premium-button"
+                                        }, "Upgrade to Premium")
+                                    )
+                                ),
+                                React.createElement('div', { className: "flex flex-col lg:flex-row gap-8 lg:items-start" },
+                                    React.createElement('div', { className: "lg:w-2/3 flex flex-col gap-8" },
+                                        React.createElement('div', { className: "bg-white rounded-xl shadow-lg p-6" },
+                                            React.createElement('div', { className: "flex justify-between items-center mb-6" },
+                                                React.createElement('h3', { className: "text-2xl font-semibold text-gray-900 flex items-center" }, React.createElement(User, { size: 24, className: "mr-3 text-blue-600" }), " My Profile"),
+                                                !isEditingProfile && React.createElement('button', { onClick: () => setIsEditingProfile(true), className: "text-blue-600 hover:text-blue-800 flex items-center text-sm font-medium" }, React.createElement(Edit, { size: 16, className: "mr-1" }), "Edit Profile")
+                                            ),
+                                            isEditingProfile ? 
+                                                (React.createElement('form', { onSubmit: handleProfileUpdate, className: "space-y-4" },
+                                                    React.createElement('div', null,
+                                                        React.createElement('label', { htmlFor: "displayName", className: "block text-sm font-medium mb-1" }, "Display Name / Alias"),
+                                                        React.createElement('input', { type: "text", id: "displayName", className: largeInputClasses, value: displayName, onChange: (e) => setDisplayName(e.target.value) })
+                                                    ),
+                                                    React.createElement('div', { className: "flex space-x-2" },
+                                                        React.createElement('button', { type: "submit", className: "px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700" }, "Save Profile"),
+                                                        React.createElement('button', { type: "button", onClick: () => setIsEditingProfile(false), className: "px-6 py-2 bg-gray-300 dark:bg-gray-600 text-black dark:text-white rounded-lg font-semibold hover:bg-gray-400" }, "Cancel")
+                                                    )
+                                                )) : 
+                                                (React.createElement('dl', { className: "divide-y divide-gray-200 dark:divide-gray-700" },
+                                                    React.createElement(ProfileDetailItem, { label: "Display Name", value: user.displayName || 'Not set' }),
+                                                    React.createElement(ProfileDetailItem, { label: "Email Address", value: user.email }),
+                                                    React.createElement(ProfileDetailItem, { label: "User ID", value: React.createElement('span', {className: "font-mono text-xs"}, user.uid) }),
+                                                    React.createElement(ProfileDetailItem, { label: "Current Role", value: React.createElement('span', {className: `capitalize font-semibold ${user.role === 'admin' ? 'text-purple-600' : (user.role === 'premium' ? 'text-yellow-500' : 'text-blue-600')}`}, user.role) }),
+                                                    React.createElement(ProfileDetailItem, { label: "Member Since", value: user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A' })
+                                                ))
+                                        ),
+                                        React.createElement('div', { className: "bg-white rounded-xl shadow-lg p-6" },
+                                            React.createElement('h3', { className: "text-2xl font-semibold text-gray-900 mb-6 flex items-center" }, React.createElement(BookOpen, { size: 24, className: "mr-3 text-blue-600" }), " Study Materials"),
+                                            React.createElement('div', { className: "mt-6 overflow-x-auto" },
+                                                studyMaterials.length > 0 ? (
+                                                    React.createElement(React.Fragment, null,
+                                                        React.createElement('table', { className: "table-auto min-w-full" },
+                                                            React.createElement('thead', null, React.createElement('tr', null, React.createElement('th', { className: "px-4 py-2" }, "Title"), React.createElement('th', { className: "px-4 py-2" }, "Description"), React.createElement('th', { className: "px-4 py-2" }, "File"), React.createElement('th', { className: "px-4 py-2" }, "Date Added"))),
+                                                            React.createElement('tbody', { className: "divide-y divide-gray-200" },
+                                                                paginatedStudyMaterials.map((material) => (
+                                                                    React.createElement('tr', { key: material.id },
+                                                                        React.createElement('td', { className: "px-4 py-2 font-semibold" }, material.title),
+                                                                        React.createElement('td', { className: "px-4 py-2 text-sm" }, material.description),
+                                                                        React.createElement('td', { className: "px-4 py-2" }, material.fileUrl && React.createElement('a', { href: material.fileUrl, target: "_blank", rel: "noopener noreferrer", className: "text-blue-600 hover:underline flex items-center text-sm" }, React.createElement(FileText, { size: 16, className: "mr-1" }), material.fileName || 'View')),
+                                                                        React.createElement('td', { className: "px-4 py-2 text-xs text-gray-500" }, new Date(material.createdAt).toLocaleString())
+                                                                    )
+                                                                ))
+                                                            )
+                                                        ),
+                                                        React.createElement(PaginationControls, { currentPage: studyMaterialsPage, totalPages: Math.ceil(studyMaterials.length / itemsPerPage), onPageChange: setStudyMaterialsPage, totalEntries: studyMaterials.length, entriesPerPage: itemsPerPage })
+                                                    )
+                                                ) : (
+                                                     React.createElement('div', {className: "text-center py-8"}, React.createElement('p', { className: "text-gray-500 italic" }, "No study materials available yet."))
+                                                )
+                                            )
+                                        )
+                                    ),
+                                    React.createElement('div', { className: "lg:w-1/3 w-full lg:flex" },
+                                       React.createElement('div', { className: "bg-white rounded-xl shadow-lg p-6 h-full flex flex-col" }, 
+                                            React.createElement('h3', { className: "text-2xl font-semibold text-gray-900 mb-6 flex items-center flex-shrink-0" }, React.createElement(Bell, { size: 24, className: "mr-3 text-blue-600" }), " Announcements"), 
+                                            React.createElement('div', { className: "flex-grow overflow-x-auto" }, 
+                                                announcements.length > 0 ? (
+                                                    React.createElement(React.Fragment, null, 
+                                                        React.createElement('table', { className: "table-auto w-full" }, 
+                                                            React.createElement('thead', null, React.createElement('tr', null, React.createElement('th', { className: "px-4 py-2" }, "Details"), React.createElement('th', { className: "px-4 py-2" }, "Date"))), 
+                                                            React.createElement('tbody', { className: "divide-y divide-gray-200" }, 
+                                                                paginatedAnnouncements.map((ann) => (
+                                                                    React.createElement('tr', { key: ann.id }, 
+                                                                        React.createElement('td', { className: "px-4 py-3 align-top" }, 
+                                                                            React.createElement('p', { className: "font-semibold text-blue-800" }, ann.title), 
+                                                                            React.createElement('p', { className: "text-sm text-gray-700 mt-1" }, ann.content), 
+                                                                            ann.fileUrl && React.createElement('p', { className: "text-sm mt-2" }, React.createElement('a', { href: ann.fileUrl, target: "_blank", rel: "noopener noreferrer", className: "text-blue-600 hover:underline flex items-center" }, React.createElement(FileText, { size: 16, className: "mr-1" }), ann.fileName || 'View Attachment'))), 
+                                                                        React.createElement('td', { className: "px-4 py-3 text-xs text-gray-500 align-top whitespace-nowrap" }, new Date(ann.createdAt).toLocaleDateString())
+                                                                    )
+                                                                ))
+                                                            )
+                                                        ), 
+                                                        React.createElement(PaginationControls, { currentPage: announcementsPage, totalPages: Math.ceil(announcements.length / itemsPerPage), onPageChange: setAnnouncementsPage, totalEntries: announcements.length, entriesPerPage: itemsPerPage })
+                                                    )
+                                                ) : ( 
+                                                    React.createElement('div', {className: "text-center py-8"}, React.createElement('p', { className: "text-gray-500 italic" }, "No announcements yet."))
+                                                )
+                                            )
+                                        )
+                                    )
+                                ),
+                                React.createElement('div', { className: "bg-white rounded-xl shadow-lg p-6" }, 
+                                    React.createElement('h3', { className: "text-2xl font-semibold text-gray-900 mb-6 flex items-center" }, React.createElement(NotebookText, { size: 24, className: "mr-3 text-blue-600" }), " My Trading Journal"), 
+                                    React.createElement('div', { className: "mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200" }, 
+                                        React.createElement('h4', { className: "font-semibold mb-2" }, editingNoteId ? 'Edit Note' : 'Add New Note'), 
+                                        React.createElement('input', { type: "text", placeholder: "Note Title", className: inputClasses, value: newNoteTitle, onChange: (e) => setNewNoteTitle(e.target.value) }), 
+                                        React.createElement('textarea', { placeholder: "Trade details, analysis, emotions...", rows: "4", className: inputClasses, value: newNoteContent, onChange: (e) => setNewNoteContent(e.target.value) }), 
+                                        React.createElement('button', { onClick: handleAddUpdateNote, className: "w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700" }, editingNoteId ? 'Update Note' : 'Add Note'), 
+                                        editingNoteId && React.createElement('button', { onClick: () => { setNewNoteTitle(''); setNewNoteContent(''); setEditingNoteId(null); }, className: "w-full mt-2 bg-gray-400 text-white py-2 rounded-md hover:bg-gray-500" }, "Cancel Edit")
+                                    ), 
+                                    React.createElement('div', { className: "overflow-x-auto" }, 
+                                        tradingNotes.length > 0 ? (
+                                            React.createElement(React.Fragment, null, 
+                                                React.createElement('table', { className: "table-auto min-w-full" }, 
+                                                    React.createElement('thead', null, React.createElement('tr', null, React.createElement('th', { className: "px-4 py-2" }, "Title"), React.createElement('th', { className: "px-4 py-2" }, "Content"), React.createElement('th', { className: "px-4 py-2" }, "Created"), React.createElement('th', { className: "px-4 py-2" }, "Updated"), React.createElement('th', { className: "px-4 py-2" }, "Actions"))), 
+                                                    React.createElement('tbody', { className: "divide-y divide-gray-200" }, 
+                                                        paginatedTradingNotes.map((note) => (
+                                                            React.createElement('tr', { key: note.id }, 
+                                                                React.createElement('td', { className: "px-4 py-2 font-semibold" }, note.title), 
+                                                                React.createElement('td', { className: "px-4 py-2 text-sm" }, note.content), 
+                                                                React.createElement('td', { className: "px-4 py-2 text-xs" }, new Date(note.createdAt).toLocaleString()), 
+                                                                React.createElement('td', { className: "px-4 py-2 text-xs" }, note.updatedAt ? new Date(note.updatedAt).toLocaleString() : 'N/A'), 
+                                                                React.createElement('td', { className: "px-4 py-2" }, React.createElement('div', { className: "flex space-x-2" }, React.createElement('button', { onClick: () => handleEditNote(note), className: "text-blue-600 hover:text-blue-800" }, React.createElement(Edit, { size: 18 })), React.createElement('button', { onClick: () => handleDeleteNote(note.id), className: "text-red-600 hover:text-red-800" }, React.createElement(Trash2, { size: 18 }))))
+                                                            )
+                                                        ))
+                                                    )
+                                                ), 
+                                                React.createElement(PaginationControls, { currentPage: tradingNotesPage, totalPages: Math.ceil(tradingNotes.length / itemsPerPage), onPageChange: setTradingNotesPage, totalEntries: tradingNotes.length, entriesPerPage: itemsPerPage })
+                                            )
+                                        ) : (
+                                            React.createElement('div', {className: "text-center py-8"}, React.createElement('p', { className: "text-gray-500 italic" }, "No trading notes yet. Start your journal!"))
+                                        )
+                                    )
+                                ),
+                                React.createElement('div', { className: "bg-white rounded-xl shadow-lg p-6" }, 
+                                    React.createElement('h3', { className: "text-2xl font-semibold text-gray-900 mb-6 flex items-center" }, React.createElement(User, { size: 24, className: "mr-3 text-blue-600" }), " Share Your Experience"), 
+                                    hasSubmittedTestimonial === null ? React.createElement('p', { className: "text-gray-500" }, "Loading...") : 
+                                    hasSubmittedTestimonial === true ? React.createElement('p', { className: "text-gray-700" }, "Thank you for sharing your experience! Your testimonial is being reviewed.") :
+                                    React.createElement(React.Fragment, null,
+                                        React.createElement('p', { className: "text-gray-700 mb-4" }, "We'd love to hear how Traders Sanctuary has helped you."),
+                                        React.createElement('form', { onSubmit: handleSubmitTestimonial, className: "space-y-4" },
+                                            React.createElement('div', null, React.createElement('label', { htmlFor: "testimonial-author", className: "block text-sm font-medium mb-1" }, "Your Name/Alias"), React.createElement('input', { type: "text", id: "testimonial-author", className: largeInputClasses, value: testimonialAuthor, onChange: (e) => setTestimonialAuthor(e.target.value), required: true })),
+                                            React.createElement('div', null, React.createElement('label', { htmlFor: "testimonial-content", className: "block text-sm font-medium mb-1" }, "Your Testimonial"), React.createElement('textarea', { id: "testimonial-content", rows: "4", className: largeInputClasses, value: testimonialContent, onChange: (e) => setTestimonialContent(e.target.value), required: true })),
+                                            React.createElement('p', { className: "text-sm text-gray-600 dark:text-gray-400" }, "Please note: You can only submit one testimonial."),
+                                            React.createElement('button', { type: "submit", className: "w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700" }, "Submit Testimonial")
+                                        )
+                                    )
+                                ),
+                                React.createElement('div', { className: "bg-white rounded-xl shadow-lg p-6 border border-gray-200" }, 
+                                    React.createElement('h3', { className: "text-2xl font-semibold text-gray-900 mb-6 flex items-center" }, React.createElement(MessageSquare, { size: 24, className: "mr-3 text-blue-600" }), " Join Our Discord Community"), 
+                                    React.createElement('p', { className: "text-gray-700 mb-4" }, "Connect with fellow traders and get real-time support in our active Discord server."), 
+                                    React.createElement('iframe', { src: "https://discord.com/widget?id=1304124268136628245&theme=dark", width: "100%", height: "300", allowtransparency: "true", frameBorder: "0", sandbox: "allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts", className: "rounded-lg min-h-[300px]", title: "Discord Widget" }), 
+                                    React.createElement('p', { className: "text-sm text-gray-500 mt-4" }, "Please ensure the Discord widget is enabled in your server settings for this to display correctly.")
+                                )
+                            )
+                        )
+                    )
+                );
+            };
+
+            // --- Premium Page Component ---
+            const PremiumPage = ({ onNavigate }) => {
+                const { user } = useContext(AuthContext);
+
+                return (
+                    React.createElement('main', { className: "flex-grow bg-gray-100 py-10 px-6 md:px-12" },
+                        React.createElement('div', { className: "container mx-auto max-w-2xl" },
+                            React.createElement('div', { className: "bg-white rounded-xl shadow-lg p-8" },
+                                React.createElement('h2', { className: "text-4xl font-bold text-blue-800 text-center mb-4" }, "Go Premium"),
+                                React.createElement('p', { className: "text-lg text-gray-700 text-center mb-8" }, "Unlock all features and get exclusive access to our trading tools and signals."),
+                                // The Stripe Payment Form will go here in the next step
+                                React.createElement('div', { className: "text-center p-8 border-2 border-dashed rounded-lg" },
+                                    React.createElement('p', { className: "text-gray-500" }, "Payment form coming soon...")
+                                ),
+                                React.createElement('button', {
+                                    onClick: () => onNavigate('dashboard'),
+                                    className: "mt-8 text-blue-600 hover:underline"
+                                }, "← Back to Dashboard")
+                            )
+                        )
+                    )
+                );
+            };
+            // --- Admin Sub-Components ---
+            const AdminDashboard = () => {
+                const { user, isAuthReady } = useContext(AuthContext);
+                const [activeTab, setActiveTab] = useState('announcements');
+                const [message, setMessage] = useState('');
+                const [messageType, setMessageType] = useState('');
+
+                 // FIX: Auto-dismiss success messages for admin actions
+                useEffect(() => {
+                    if (message && messageType === 'success') {
+                        const timer = setTimeout(() => {
+                            setMessage('');
+                            setMessageType('');
+                        }, 4000); // Disappear after 4 seconds
+
+                        return () => clearTimeout(timer); // Cleanup timer
+                    }
+                }, [message, messageType]);
+
+
+                if (!isAuthReady) return React.createElement('div', { className: "flex justify-center items-center h-screen bg-gray-100" }, "Loading admin panel...");
+                if (!user || user.role !== 'admin') return React.createElement('div', { className: "flex flex-col justify-center items-center h-screen bg-gray-100 p-4 text-center" }, React.createElement('h2', { className: "text-3xl font-bold text-red-600 mb-4" }, "Admin Access Denied"), React.createElement('p', { className: "text-lg text-gray-700" }, "You must be an administrator to view this page."));
+
+                return (
+                    React.createElement('main', { className : "flex-grow bg-gray-100 dashboard-main-bg py-10 px-6 md:px-12" },
+                        React.createElement('div', { className: "container mx-auto" },
+                            React.createElement('h2', { className: "text-4xl font-bold text-blue-800 mb-8" }, "Admin Panel"),
+                            message && React.createElement(MessageModal, { message: message, type: messageType, onClose: () => setMessage(''), showCloseButton: messageType !== 'success'  }),
+                            React.createElement('div', { className: "bg-white rounded-xl shadow-lg p-6" },
+                                // Responsive Tab Container
+                                React.createElement('div', { className: "mb-6 border-b border-gray-200 dark:border-gray-700" },
+                                    React.createElement('nav', { className: "flex flex-wrap -mb-px" },
+                                        React.createElement('button', {
+                                            onClick: () => setActiveTab('announcements'),
+                                            className: `flex-1 py-3 px-4 text-lg font-semibold text-center ${activeTab === 'announcements' ? 'text-blue-700 border-b-2 border-blue-700' : 'text-gray-600 hover:text-blue-700 border-b-2 border-transparent'}`
+                                        }, "Announcements"),
+                                        React.createElement('button', {
+                                            onClick: () => setActiveTab('testimonials'),
+                                            className: `flex-1 py-3 px-4 text-lg font-semibold text-center ${activeTab === 'testimonials' ? 'text-blue-700 border-b-2 border-blue-700' : 'text-gray-600 hover:text-blue-700 border-b-2 border-transparent'}`
+                                        }, "Testimonials"),
+                                        React.createElement('button', {
+                                            onClick: () => setActiveTab('users'),
+                                            className: `flex-1 py-3 px-4 text-lg font-semibold text-center ${activeTab === 'users' ? 'text-blue-700 border-b-2 border-blue-700' : 'text-gray-600 hover:text-blue-700 border-b-2 border-transparent'}`
+                                        }, "Users"),
+                                        React.createElement('button', {
+                                            onClick: () => setActiveTab('study_materials'),
+                                            className: `flex-1 py-3 px-4 text-lg font-semibold text-center ${activeTab === 'study_materials' ? 'text-blue-700 border-b-2 border-blue-700' : 'text-gray-600 hover:text-blue-700 border-b-2 border-transparent'}`
+                                        }, "Study Materials"),
+                                        React.createElement('button', {
+                                            onClick: () => setActiveTab('certificates'),
+                                            className: `flex-1 py-3 px-4 text-lg font-semibold text-center ${activeTab === 'certificates' ? 'text-blue-700 border-b-2 border-blue-700' : 'text-gray-600 hover:text-blue-700 border-b-2 border-transparent'}`
+                                        }, "Certificates")
+                                    )
+                                ),
+                                activeTab === 'announcements' && React.createElement(ManageAnnouncements, { setMessage: setMessage, setMessageType: setMessageType, userId: user.uid }),
+                                activeTab === 'testimonials' && React.createElement(ManageTestimonials, { setMessage: setMessage, setMessageType: setMessageType }),
+                                activeTab === 'users' && React.createElement(ManageUsers, { setMessage: setMessage, setMessageType: setMessageType }),
+                                activeTab === 'study_materials' && React.createElement(ManageStudyMaterials, { setMessage: setMessage, setMessageType: setMessageType }),
+                                activeTab === 'certificates' && React.createElement(ManageCertificates, { setMessage: setMessage, setMessageType: setMessageType })
+                            )
+                        )
+                    )
+                );
+            };
+            const ManageAnnouncements = ({ setMessage, setMessageType, userId }) => {
+                const [announcements, setAnnouncements] = useState([]);
+                const [newTitle, setNewTitle] = useState('');
+                const [newContent, setNewContent] = useState('');
+                const [selectedFile, setSelectedFile] = useState(null);
+                const [uploading, setUploading] = useState(false);
+                const [editingId, setEditingId] = useState(null);
+                const [currentPage, setCurrentPage] = useState(1);
+                const itemsPerPage = 5;
+                const inputClasses = "w-full p-2 border rounded-md mb-2";
+
+                useEffect(() => {
+                    if (!db) return;
+                    const announcementsCollectionRef = collection(db, `artifacts/${appId}/public/data/announcements`);
+                    const unsubscribe = onSnapshot(announcementsCollectionRef, (snapshot) => {
+                        setAnnouncements(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
+                    }, (error) => { console.error("Error fetching announcements:", error); });
+                    return () => unsubscribe();
+                }, [db]);
+
+                const paginatedAnnouncements = useMemo(() => announcements.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage), [announcements, currentPage]);
+
+                const handleFileChange = (e) => setSelectedFile(e.target.files[0] || null);
+
+                const uploadFile = async (file, folder) => {
+                    if (!file) return null;
+                    setUploading(true);
+                    try {
+                        const storageRef = ref(storage, `${folder}/${file.name}_${Date.now()}`);
+                        await uploadBytes(storageRef, file);
+                        const fileUrl = await getDownloadURL(storageRef);
+                        setUploading(false);
+                        return { fileUrl, fileName: file.name };
+                    } catch (error) {
+                        console.error("Error uploading file:", error);
+                        setMessage("Failed to upload file: " + error.message);
+                        setMessageType('error');
+                        setUploading(false);
+                        return null;
+                    }
+                };
+
+                const handleAddUpdateAnnouncement = async () => {
+                    if (!newTitle || !newContent) { setMessage("Please fill title and content."); setMessageType('error'); return; }
+                    try {
+                        let fileData = {};
+                        if (selectedFile) {
+                            fileData = await uploadFile(selectedFile, 'announcement_files');
+                            if (!fileData) return;
+                        }
+                        if (editingId) {
+                             await updateDoc(doc(db, `artifacts/${appId}/public/data/announcements`, editingId), { title: newTitle, content: newContent, updatedAt: new Date().toISOString(), ...(selectedFile ? fileData : {}) });
+                             setMessage("Announcement updated!");
+                        } else {
+                            await addDoc(collection(db, `artifacts/${appId}/public/data/announcements`), { title: newTitle, content: newContent, createdAt: new Date().toISOString(), authorId: userId, ...fileData });
+                            setMessage("Announcement added!");
+                        }
+                        setMessageType('success');
+                        setNewTitle(''); setNewContent(''); setSelectedFile(null); setEditingId(null);
+                    } catch (error) {
+                        console.error("Error saving announcement:", error);
+                        setMessage("Failed to save announcement."); setMessageType('error');
+                    }
+                };
+
+                const handleDeleteAnnouncement = async (id, fileUrl) => {
+                    if (!window.confirm("Are you sure?")) return;
+                    try {
+                        if (fileUrl) {
+                            const fileRef = ref(storage, fileUrl);
+                            await deleteObject(fileRef);
+                        }
+                        await deleteDoc(doc(db, `artifacts/${appId}/public/data/announcements`, id));
+                        setMessage("Announcement deleted!"); setMessageType('success');
+                    } catch (error) {
+                        console.error("Error deleting announcement:", error);
+                        setMessage("Failed to delete announcement: " + error.message); setMessageType('error');
+                    }
+                };
+
+                const startEditing = (ann) => { setEditingId(ann.id); setNewTitle(ann.title); setNewContent(ann.content); setSelectedFile(null); };
+
+                return (
+                    React.createElement('div', null,
+                        React.createElement('h3', { className: "text-xl font-semibold text-gray-900 mb-4" }, "Manage Announcements"),
+                        React.createElement('div', { className: "mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200" },
+                            React.createElement('h4', { className: "font-semibold mb-2" }, editingId ? 'Edit Announcement' : 'Add New Announcement'),
+                            React.createElement('input', { type: "text", placeholder: "Title", className: inputClasses, value: newTitle, onChange: (e) => setNewTitle(e.target.value) }),
+                            React.createElement('textarea', { placeholder: "Content", rows: "3", className: inputClasses, value: newContent, onChange: (e) => setNewContent(e.target.value) }),
+                            React.createElement('label', { htmlFor: "ann-file", className: "block text-sm font-medium mb-1 mt-2" }, "Attach File (Optional)"),
+                            React.createElement('input', { type: "file", id: "ann-file", className: inputClasses, onChange: handleFileChange }),
+                            selectedFile && React.createElement('p', { className: "text-sm text-gray-600 dark:text-gray-400 mb-2" }, "Selected: ", selectedFile.name),
+                            uploading && React.createElement('p', { className: "text-blue-600 dark:text-blue-400 text-sm mb-2" }, "Uploading..."),
+                            React.createElement('button', { onClick: handleAddUpdateAnnouncement, className: `w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 ${uploading ? 'opacity-50 cursor-not-allowed' : ''}`, disabled: uploading }, editingId ? 'Update' : 'Add'),
+                            editingId && React.createElement('button', { onClick: () => { setEditingId(null); setNewTitle(''); setNewContent(''); setSelectedFile(null); }, className: "w-full mt-2 bg-gray-400 text-white py-2 rounded-md hover:bg-gray-500" }, "Cancel Edit")
+                        ),
+                        React.createElement('div', { className: "overflow-x-auto" },
+                            announcements.length > 0 ? (
+                                React.createElement(React.Fragment, null,
+                                    React.createElement('table', { className: "table-auto min-w-full" },
+                                        React.createElement('thead', null, 
+                                            React.createElement('tr', null, 
+                                                React.createElement('th', { className: "px-4 py-2" }, "Title"),
+                                                React.createElement('th', { className: "px-4 py-2" }, "Content"),
+                                                React.createElement('th', { className: "px-4 py-2" }, "File"),
+                                                React.createElement('th', { className: "px-4 py-2" }, "Posted"),
+                                                React.createElement('th', { className: "px-4 py-2" }, "Actions")
+                                            )
+                                        ),
+                                        React.createElement('tbody', { className: "divide-y divide-gray-200" },
+                                            paginatedAnnouncements.map((ann) => (
+                                                React.createElement('tr', { key: ann.id },
+                                                    React.createElement('td', { className: "px-4 py-2 font-semibold" }, ann.title),
+                                                    React.createElement('td', { className: "px-4 py-2 text-sm" }, ann.content),
+                                                    React.createElement('td', { className: "px-4 py-2" }, ann.fileUrl && React.createElement('a', { href: ann.fileUrl, target: "_blank", rel: "noopener noreferrer", className: "text-blue-600 hover:underline flex items-center text-sm" }, React.createElement(FileText, { size: 16, className: "mr-1" }), ann.fileName || 'View')),
+                                                    React.createElement('td', { className: "px-4 py-2 text-xs text-gray-500" }, new Date(ann.createdAt).toLocaleString()),
+                                                    React.createElement('td', { className: "px-4 py-2" }, 
+                                                        React.createElement('div', { className: "flex space-x-2" },
+                                                            React.createElement('button', { onClick: () => startEditing(ann), className: "text-blue-600" }, React.createElement(Edit, { size: 18 })),
+                                                            React.createElement('button', { onClick: () => handleDeleteAnnouncement(ann.id, ann.fileUrl), className: "text-red-600" }, React.createElement(Trash2, { size: 18 }))
+                                                        )
+                                                    )
+                                                )
+                                            ))
+                                        )
+                                    ),
+                                    React.createElement(PaginationControls, { currentPage: currentPage, totalPages: Math.ceil(announcements.length / itemsPerPage), onPageChange: setCurrentPage, totalEntries: announcements.length, entriesPerPage: itemsPerPage })
+                                )
+                            ) : ( React.createElement('div', {className: "text-center py-8"}, React.createElement('p', { className: "text-gray-500 italic" }, "No announcements to manage.")) )
+                        )
+                    )
+                );
+            };
+
+            const ManageTestimonials = ({ setMessage, setMessageType }) => {
+                const [testimonials, setTestimonials] = useState([]);
+                const [currentPage, setCurrentPage] = useState(1);
+                const itemsPerPage = 10;
+
+                useEffect(() => {
+                    if (!db) return;
+                    const testimonialsCollectionRef = collection(db, `artifacts/${appId}/public/data/testimonials`);
+                    const unsubscribe = onSnapshot(testimonialsCollectionRef, (snapshot) => {
+                        setTestimonials(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
+                    }, (error) => console.error("Error fetching testimonials:", error));
+                    return () => unsubscribe();
+                }, [db]);
+                
+                const paginatedTestimonials = useMemo(() => testimonials.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage), [testimonials, currentPage]);
+
+                const handleApproveTestimonial = async (id) => {
+                    try {
+                        await updateDoc(doc(db, `artifacts/${appId}/public/data/testimonials`, id), { approved: true, approvedAt: new Date().toISOString() });
+                        setMessage("Testimonial approved!"); setMessageType('success');
+                    } catch (error) { console.error("Error approving testimonial:", error); setMessage("Failed to approve."); setMessageType('error'); }
+                };
+
+                const handleDeleteTestimonial = async (id) => {
+                    if (!window.confirm("Are you sure?")) return;
+                    try {
+                        await deleteDoc(doc(db, `artifacts/${appId}/public/data/testimonials`, id));
+                        setMessage("Testimonial deleted!"); setMessageType('success');
+                    } catch (error) { console.error("Error deleting testimonial:", error); setMessage("Failed to delete."); setMessageType('error'); }
+                };
+
+                return (
+                    React.createElement('div', { className: "overflow-x-auto" },
+                        React.createElement('h3', { className: "text-xl font-semibold text-gray-900 mb-4" }, "Manage Testimonials"),
+                        testimonials.length > 0 ? (
+                            React.createElement(React.Fragment, null,
+                                React.createElement('table', { className: "table-auto min-w-full" },
+                                    React.createElement('thead', null, React.createElement('tr', null, React.createElement('th', {className: "px-4 py-2"},"Author"), React.createElement('th', {className: "px-4 py-2"},"Testimonial"), React.createElement('th', {className: "px-4 py-2"},"Submitted"), React.createElement('th', {className: "px-4 py-2"},"Status"), React.createElement('th', {className: "px-4 py-2"},"Actions"))),
+                                    React.createElement('tbody', { className: "divide-y divide-gray-200" },
+                                        paginatedTestimonials.map((t) => (
+                                            React.createElement('tr', { key: t.id, className: `${t.approved ? 'bg-green-50 dark:bg-green-900/10' : 'bg-yellow-50 dark:bg-yellow-900/10'}` },
+                                                React.createElement('td', { className: "px-4 py-2 font-semibold" }, t.author),
+                                                React.createElement('td', { className: "px-4 py-2 text-sm italic" }, `"${t.content}"`),
+                                                React.createElement('td', { className: "px-4 py-2 text-xs" }, new Date(t.createdAt).toLocaleString()),
+                                                React.createElement('td', { className: "px-4 py-2 text-xs" }, t.approved ? React.createElement('span', { className: 'font-bold text-green-600' }, 'Approved') : React.createElement('span', { className: 'font-bold text-yellow-600' }, 'Pending')),
+                                                React.createElement('td', { className: "px-4 py-2" }, React.createElement('div', { className: "flex space-x-2" }, !t.approved && React.createElement('button', { onClick: () => handleApproveTestimonial(t.id), className: "text-green-600", title: "Approve" }, React.createElement(Check, { size: 18 })), React.createElement('button', { onClick: () => handleDeleteTestimonial(t.id), className: "text-red-600", title: "Delete" }, React.createElement(Trash2, { size: 18 }))))
+                                            )
+                                        ))
+                                    )
+                                ),
+                                React.createElement(PaginationControls, { currentPage: currentPage, totalPages: Math.ceil(testimonials.length / itemsPerPage), onPageChange: setCurrentPage, totalEntries: testimonials.length, entriesPerPage: itemsPerPage })
+                            )
+                        ) : (
+                            React.createElement('div', {className: "text-center py-8"}, React.createElement('p', { className: "text-gray-500 italic" }, "No testimonials to manage."))
+                        )
+                    )
+                );
+            };
+
+            const ManageUsers = ({ setMessage, setMessageType }) => {
+                const [users, setUsers] = useState([]);
+                const [searchTerm, setSearchTerm] = useState('');
+                const { user, isAuthReady } = useContext(AuthContext);
+                const [currentPage, setCurrentPage] = useState(1);
+                const itemsPerPage = 10;
+
+                useEffect(() => {
+                    if (!db || !isAuthReady || !user || user.role !== 'admin') return;
+
+                    const usersCollectionRef = collection(db, `artifacts/${appId}/users`);
+                    const unsubscribe = onSnapshot(usersCollectionRef, async (snapshot) => {
+                        const profilePromises = snapshot.docs.map(async (userDoc) => {
+                            const profileSnap = await getDoc(doc(db, `artifacts/${appId}/users/${userDoc.id}/profile/data`));
+                            return profileSnap.exists() ? { id: userDoc.id, ...profileSnap.data() } : null;
+                        });
+                        const userProfiles = (await Promise.all(profilePromises)).filter(p => p !== null);
+                        setUsers(userProfiles);
+                    }, (error) => console.error("Error fetching users:", error));
+                    return () => unsubscribe();
+                }, [db, user, isAuthReady]);
+
+                const filteredUsers = useMemo(() => {
+                    if (!searchTerm) return users;
+                    const lowercasedTerm = searchTerm.toLowerCase();
+                    return users.filter(u => (u.email && u.email.toLowerCase().includes(lowercasedTerm)) || (u.id && u.id.toLowerCase().includes(lowercasedTerm)));
+                }, [users, searchTerm]);
+                
+                const paginatedUsers = useMemo(() => filteredUsers.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage), [filteredUsers, currentPage]);
+
+                const handleChangeUserRole = async (userId, currentRole) => {
+                    const newRole = currentRole === 'admin' ? 'member' : 'admin';
+                    try {
+                        await updateDoc(doc(db, `artifacts/${appId}/users/${userId}/profile/data`), { role: newRole });
+                        setMessage(`User role updated to ${newRole}.`); setMessageType('success');
+                    } catch (error) { console.error("Error changing role:", error); setMessage("Failed to change role."); setMessageType('error'); }
+                };
+
+                const handleDeleteUser = async (userIdToDelete) => {
+                    if (!window.confirm("This will permanently delete the user's data and their login account. Are you sure?")) return;
+
+                    try {
+                        // Step 1: Delete the Firestore database records first
+                        await deleteDoc(doc(db, `artifacts/${appId}/users/${userIdToDelete}/profile/data`));
+                        await deleteDoc(doc(db, `artifacts/${appId}/users/${userIdToDelete}`));
+                        
+                        // Step 2: Call the Cloud Function to delete the auth account
+                        const functions = getFunctions(app); // Make sure you import getFunctions
+                        const deleteUserAccount = httpsCallable(functions, 'deleteUserAccount');
+                        await deleteUserAccount({ uid: userIdToDelete });
+
+                        setMessage(`User ${userIdToDelete} has been completely deleted.`);
+                        setMessageType('success');
+                    } catch (error) {
+                        console.error("Error deleting user:", error);
+                        setMessage("Failed to delete user: " + error.message);
+                        setMessageType('error');
+                    }
+                };
+                return (
+                    React.createElement('div', null,
+                        React.createElement('h3', { className: "text-xl font-semibold text-gray-900 mb-4" }, "Manage Users"),
+                        React.createElement('div', { className: "mb-6" }, React.createElement('input', { type: "text", placeholder: "Search by email or ID...", className: "w-full p-3 border border-gray-300 rounded-lg", value: searchTerm, onChange: (e) => setSearchTerm(e.target.value) })),
+                        React.createElement('div', { className: "overflow-x-auto bg-white rounded-lg shadow-sm border border-gray-200" },
+                            filteredUsers.length > 0 ? (
+                                React.createElement(React.Fragment, null,
+                                    React.createElement('table', { className: "table-auto min-w-full divide-y divide-gray-200" },
+                                        React.createElement('thead', null, React.createElement('tr', null, React.createElement('th', {className: "px-6 py-3"},"Email"), React.createElement('th', {className: "px-6 py-3"},"User ID"), React.createElement('th', {className: "px-6 py-3"},"Role"), React.createElement('th', {className: "px-6 py-3"},"Joined"), React.createElement('th', {className: "px-6 py-3"},"Actions"))),
+                                        React.createElement('tbody', { className: "divide-y divide-gray-200" },
+                                            paginatedUsers.map((u) => (
+                                                React.createElement('tr', { key: u.id },
+                                                    React.createElement('td', { className: "px-6 py-4 text-sm font-medium admin-email-text" }, u.email || 'N/A'),
+                                                    React.createElement('td', { className: "px-6 py-4 text-sm text-gray-600" }, u.id),
+                                                    React.createElement('td', { className: "px-6 py-4 text-sm" }, React.createElement('span', { className: `font-bold ${u.role === 'admin' ? 'text-purple-600' : 'text-blue-600'}` }, u.role)),
+                                                    React.createElement('td', { className: "px-6 py-4 text-sm text-gray-500" }, u.createdAt ? new Date(u.createdAt).toLocaleString() : 'N/A'),
+                                                    React.createElement('td', { className: "px-6 py-4 text-sm font-medium" },
+                                                        React.createElement('div', { className: "flex space-x-2" },
+                                                            React.createElement('button', { onClick: () => handleChangeUserRole(u.id, u.role), className: "px-3 py-1 text-xs rounded-md bg-blue-100 text-blue-800 hover:bg-blue-200 transition change-role-button" }, `Make ${u.role === 'admin' ? 'Member' : 'Admin'}`),
+                                                            React.createElement('button', { onClick: () => handleDeleteUser(u.id), className: "text-red-600 hover:text-red-800" }, React.createElement(Trash2, { size: 18 }))
+                                                        )
+                                                    )
+                                                )
+                                            ))
+                                        )
+                                    ),
+                                    React.createElement(PaginationControls, { currentPage: currentPage, totalPages: Math.ceil(filteredUsers.length / itemsPerPage), onPageChange: setCurrentPage, totalEntries: filteredUsers.length, entriesPerPage: itemsPerPage })
+                                )
+                            )
+                            : ( React.createElement('div', {className: "text-center py-8"}, React.createElement('p', { className: "text-gray-500 italic" }, searchTerm ? "No users match your search." : "No users to manage.")) )
+                        )
+                    )
+                );
+            };
+            
+            const ManageStudyMaterials = ({ setMessage, setMessageType }) => {
+                const [studyMaterials, setStudyMaterials] = useState([]);
+                const [newTitle, setNewTitle] = useState('');
+                const [newDescription, setNewDescription] = useState('');
+                const [selectedFile, setSelectedFile] = useState(null);
+                const [uploading, setUploading] = useState(false);
+                const [currentPage, setCurrentPage] = useState(1);
+                const itemsPerPage = 10;
+                const inputClasses = "w-full p-2 border rounded-md mb-2";
+
+                const fetchMaterials = () => {
+                    fetch(`get_study_materials.php?v=${Date.now()}`) // Bust cache
+                        .then(res => res.json())
+                        .then(data => {
+                            data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                            setStudyMaterials(data);
+                        })
+                        .catch(err => {
+                            console.error("Error fetching materials:", err);
+                            setMessage("Failed to load study materials.");
+                            setMessageType("error");
+                        });
+                };
+
+                useEffect(() => {
+                    fetchMaterials();
+                }, []);
+                
+                const paginatedMaterials = useMemo(() => studyMaterials.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage), [studyMaterials, currentPage]);
+                const handleFileChange = (e) => setSelectedFile(e.target.files[0] || null);
+
+                const handleAddMaterial = async (e) => {
+                    e.preventDefault();
+                    if (!newTitle || !newDescription || !selectedFile) {
+                        setMessage("Please fill all fields and select a file.");
+                        setMessageType('error');
+                        return;
+                    }
+                    setUploading(true);
+
+                    const formData = new FormData();
+                    formData.append('materialFile', selectedFile);
+                    formData.append('title', newTitle);
+                    formData.append('description', newDescription);
+
+                    try {
+                        const response = await fetch('upload_study_material.php', {
+                            method: 'POST',
+                            body: formData,
+                        });
+                        const result = await response.json();
+
+                        if (result.success) {
+                            setMessage(result.message || "Material added successfully!");
+                            setMessageType('success');
+                            fetchMaterials(); // Refresh the list
+                            // Clear form
+                            setNewTitle('');
+                            setNewDescription('');
+                            setSelectedFile(null);
+                            document.getElementById('study-file').value = '';
+                        } else {
+                            setMessage(result.message || "An unknown error occurred.");
+                            setMessageType('error');
+                        }
+                    } catch (error) {
+                        setMessage("Failed to upload: " + error.message);
+                        setMessageType('error');
+                    } finally {
+                        setUploading(false);
+                    }
+                };
+
+                const handleDeleteMaterial = async (material) => {
+                    if (!window.confirm("Are you sure you want to delete this material?")) return;
+                    
+                    try {
+                         const response = await fetch('delete_study_material.php', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ id: material.id, fileName: material.fileName }),
+                        });
+                        const result = await response.json();
+
+                        if (result.success) {
+                            setMessage(result.message || "Material deleted successfully!");
+                            setMessageType('success');
+                            fetchMaterials(); // Refresh the list
+                        } else {
+                            setMessage(result.message || "An unknown error occurred.");
+                            setMessageType('error');
+                        }
+                    } catch (error) {
+                        setMessage("Failed to delete: " + error.message);
+                        setMessageType('error');
+                    }
+                };
+                
+                // NOTE: Edit functionality is removed for simplicity with a local file-based system.
+                // A user can delete and re-upload to "edit".
+
+                return (
+                    React.createElement('div', null,
+                        React.createElement('h3', { className: "text-xl font-semibold text-gray-900 mb-4" }, "Manage Study Materials"),
+                        React.createElement('form', { onSubmit: handleAddMaterial, className: "mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200" },
+                            React.createElement('h4', { className: "font-semibold mb-2" }, 'Add New Material'),
+                            React.createElement('input', { type: "text", placeholder: "Title", className: inputClasses, value: newTitle, onChange: (e) => setNewTitle(e.target.value), required: true }),
+                            React.createElement('textarea', { placeholder: "Description", rows: "3", className: inputClasses, value: newDescription, onChange: (e) => setNewDescription(e.target.value), required: true }),
+                            React.createElement('input', { type: "file", id: "study-file", className: inputClasses, onChange: handleFileChange, required: true }),
+                            selectedFile && React.createElement('p', { className: "text-sm text-gray-600 mb-2" }, "Selected: ", selectedFile.name),
+                            uploading && React.createElement('p', { className: "text-blue-600 text-sm mb-2" }, "Uploading..."),
+                            React.createElement('button', { type: "submit", className: `w-full bg-blue-600 text-white py-2 rounded-md ${uploading ? 'opacity-50' : ''}`, disabled: uploading }, 'Add Material')
+                        ),
+                        React.createElement('h4', { className: "text-xl font-semibold my-4" }, "Existing Materials"),
+                         React.createElement('div', { className: "overflow-x-auto" },
+                            studyMaterials.length > 0 ? (
+                                React.createElement(React.Fragment, null,
+                                    React.createElement('table', { className: "table-auto min-w-full" },
+                                        React.createElement('thead', null, React.createElement('tr', null, React.createElement('th', {className:"px-4 py-2"},"Title"), React.createElement('th', {className:"px-4 py-2"},"Description"), React.createElement('th', {className:"px-4 py-2"},"File"), React.createElement('th', {className:"px-4 py-2"},"Added"), React.createElement('th', {className:"px-4 py-2"},"Actions"))),
+                                        React.createElement('tbody', { className: "divide-y divide-gray-200" },
+                                            paginatedMaterials.map((mat) => (
+                                                React.createElement('tr', { key: mat.id },
+                                                    React.createElement('td', { className: "px-4 py-2 font-semibold" }, mat.title),
+                                                    React.createElement('td', { className: "px-4 py-2 text-sm" }, mat.description),
+                                                    React.createElement('td', { className: "px-4 py-2 text-sm" }, mat.fileUrl && React.createElement('a', { href: mat.fileUrl, target: "_blank", rel: "noopener noreferrer", className: "text-blue-600 hover:underline" }, mat.fileName)),
+                                                    React.createElement('td', { className: "px-4 py-2 text-xs" }, new Date(mat.createdAt).toLocaleString()),
+                                                    React.createElement('td', { className: "px-4 py-2" }, React.createElement('div', { className: "flex space-x-2" }, React.createElement('button', { onClick: () => handleDeleteMaterial(mat), className: "text-red-600" }, React.createElement(Trash2, { size: 18 }))))
+                                                )
+                                            ))
+                                        )
+                                    ),
+                                    React.createElement(PaginationControls, { currentPage: currentPage, totalPages: Math.ceil(studyMaterials.length / itemsPerPage), onPageChange: setCurrentPage, totalEntries: studyMaterials.length, entriesPerPage: itemsPerPage })
+                                )
+                            ) : (
+                                React.createElement('div', {className: "text-center py-8"}, React.createElement('p', { className: "text-gray-500 italic" }, "No study materials added yet."))
+                            )
+                        )
+                    )
+                );
+            };
+            
+            const ManageCertificates = ({ setMessage, setMessageType }) => {
+                const [certificates, setCertificates] = useState([]);
+                const [selectedFile, setSelectedFile] = useState(null);
+                const [uploading, setUploading] = useState(false);
+                const [lastUpdated, setLastUpdated] = useState(Date.now()); // State to force re-fetch
+                const inputClasses = "w-full p-2 border rounded-md mb-2";
+
+                useEffect(() => {
+                    fetch(`certificates.json?v=${lastUpdated}`) // Add version query to prevent caching
+                        .then(res => res.ok ? res.json() : [])
+                        .then(data => setCertificates(Array.isArray(data) ? data : []))
+                        .catch(err => {
+                            console.error("Error fetching certificates list:", err);
+                            setCertificates([]);
+                        });
+                }, [lastUpdated]);
+
+                const handleFileChange = (e) => setSelectedFile(e.target.files[0] || null);
+
+                const handleAddCertificate = async () => {
+                    if (!selectedFile) {
+                        setMessage("Please select an image file to upload.");
+                        setMessageType('error');
+                        return;
+                    }
+                    setUploading(true);
+
+                    const formData = new FormData();
+                    formData.append('certificate', selectedFile);
+
+                    try {
+                        const response = await fetch('upload_certificate.php', {
+                            method: 'POST',
+                            body: formData,
+                        });
+                        const result = await response.json();
+
+                        if (result.success) {
+                            setMessage(result.message);
+                            setMessageType('success');
+                            setLastUpdated(Date.now()); // Trigger re-fetch
+                        } else {
+                            setMessage(result.message || "An unknown error occurred.");
+                            setMessageType('error');
+                        }
+                    } catch (error) {
+                        setMessage("Failed to upload: " + error.message);
+                        setMessageType('error');
+                    } finally {
+                        setUploading(false);
+                        setSelectedFile(null);
+                        document.getElementById('cert-file').value = '';
+                    }
+                };
+
+                const handleDeleteCertificate = async (fileName) => {
+                    if (!window.confirm("Are you sure you want to delete this certificate?")) return;
+                    
+                    try {
+                         const response = await fetch('delete_certificate.php', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ fileName: fileName }),
+                        });
+                        const result = await response.json();
+
+                        if (result.success) {
+                            setMessage(result.message);
+                            setMessageType('success');
+                            setLastUpdated(Date.now()); // Trigger re-fetch
+                        } else {
+                            setMessage(result.message || "An unknown error occurred.");
+                            setMessageType('error');
+                        }
+                    } catch (error) {
+                        setMessage("Failed to delete: " + error.message);
+                        setMessageType('error');
+                    }
+                };
+
+                return (
+                    React.createElement('div', null,
+                        React.createElement('h3', { className: "text-xl font-semibold text-gray-900 mb-4" }, "Manage Funded Certificates"),
+                        React.createElement('div', { className: "mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200" },
+                            React.createElement('h4', { className: "font-semibold mb-2" }, "Upload New Certificate"),
+                            React.createElement('input', { type: "file", id: "cert-file", className: inputClasses, onChange: handleFileChange, accept:"image/*" }),
+                            selectedFile && React.createElement('p', { className: "text-sm text-gray-600 mb-2" }, "Selected: ", selectedFile.name),
+                            uploading && React.createElement('p', { className: "text-blue-600 text-sm mb-2" }, "Uploading..."),
+                            React.createElement('button', { onClick: handleAddCertificate, className: `w-full bg-blue-600 text-white py-2 rounded-md ${uploading ? 'opacity-50' : ''}`, disabled: uploading }, "Add Certificate")
+                        ),
+                        React.createElement('h4', { className: "text-xl font-semibold my-4" }, "Existing Certificates"),
+                        React.createElement('div', { className: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4" },
+                            certificates.length > 0 ? (
+                                certificates.map(fileName => 
+                                    React.createElement('div', { key: fileName, className: "relative group" },
+                                        React.createElement('img', { src: `funded certificates/${fileName}`, alt: fileName, className: "w-full h-auto object-cover rounded-md shadow-lg" }),
+                                        React.createElement('div', { className: "absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity" },
+                                            React.createElement('button', { 
+                                                onClick: () => handleDeleteCertificate(fileName), 
+                                                className: "p-2 bg-red-600 text-white rounded-full hover:bg-red-700"
+                                            }, React.createElement(Trash2, { size: 20 }))
+                                        )
+                                    )
+                                )
+                            ) : (
+                                React.createElement('p', { className: "text-gray-500 italic col-span-full text-center py-8" }, "No certificates have been uploaded yet.")
+                            )
+                        )
+                    )
+                );
+            };
+
+
+            // --- Auto-logout Hook ---
+            const useIdleTimer = (onIdle, idleTime = 15 * 60 * 1000) => { // 15 minutes
+                const timeoutId = useRef();
+
+                const resetTimer = useCallback(() => {
+                    clearTimeout(timeoutId.current);
+                    timeoutId.current = setTimeout(onIdle, idleTime);
+                }, [onIdle, idleTime]);
+
+                useEffect(() => {
+                    const events = ['mousemove', 'mousedown', 'keypress', 'scroll', 'touchstart'];
+                    
+                    const eventListener = () => resetTimer();
+
+                    events.forEach(event => window.addEventListener(event, eventListener, { passive: true }));
+                    resetTimer();
+
+                    return () => {
+                        clearTimeout(timeoutId.current);
+                        events.forEach(event => window.removeEventListener(event, eventListener));
+                    };
+                }, [resetTimer]);
+            };
+
+
+            // --- Main App Component ---
+            const App = () => {
+                const { user, logout, isAuthReady } = useContext(AuthContext);
+                const [currentPage, setCurrentPage] = useState('landing');
+                const [showAuthModal, setShowAuthModal] = useState(false);
+                const [authModalType, setAuthModalType] = useState('login');
+                const [globalMessage, setGlobalMessage] = useState('');
+                const [globalMessageType, setGlobalMessageType] = useState('');
+
+                useEffect(() => {
+                    const handleTawkLoad = () => {
+                        if (user && window.Tawk_API && typeof window.Tawk_API.setAttributes === 'function') {
+                            window.Tawk_API.setAttributes({
+                                name: user.displayName || user.email.split('@')[0],
+                                email: user.email,
+                                hash: user.uid
+                            }, function(error){
+                                if (error) console.error('Tawk.to error:', error);
+                            });
+                        }
+                    };
+                    window.addEventListener('tawkLoad', handleTawkLoad);
+                    if (window.Tawk_API && window.Tawk_API.getStatus?.()) {
+                       handleTawkLoad();
+                    }
+                    if (!user && window.Tawk_API && typeof window.Tawk_API.endChat === 'function') {
+                        window.Tawk_API.endChat();
+                    }
+                    return () => {
+                        window.removeEventListener('tawkLoad', handleTawkLoad);
+                    };
+                }, [user]);
+
+
+                useEffect(() => {
+                    if (globalMessage && globalMessageType === 'success') {
+                        const timer = setTimeout(() => {
+                            setGlobalMessage('');
+                        }, 4000);
+                        return () => clearTimeout(timer);
+                    }
+                }, [globalMessage, globalMessageType]);
+
+                const handleLogout = useCallback(async (isIdle = false) => {
+                    const message = isIdle 
+                        ? "You have been logged out due to inactivity." 
+                        : "Logout Successful!";
+                    await logout();
+                    setCurrentPage('landing');
+                    setGlobalMessage(message);
+                    setGlobalMessageType('success');
+                }, [logout]);
+                
+                const handleIdle = useCallback(() => {
+                    if (user) {
+                        handleLogout(true);
+                    }
+                }, [user, handleLogout]);
+                
+                useIdleTimer(handleIdle, 15 * 60 * 1000);
+
+                useEffect(() => {
+                    if (isAuthReady) {
+                        if (user) {
+                            // Keep user on premium page if they are there, otherwise go to dashboard
+                            if (currentPage === 'landing') {
+                                setCurrentPage('dashboard');
+                            }
+                        } else {
+                            const protectedPages = ['dashboard', 'admin', 'premium']; // Added premium
+                            if (protectedPages.includes(currentPage)) {
+                                setCurrentPage('landing');
+                            }
+                        }
+                    }
+                }, [user, isAuthReady, currentPage]);
+                
+                const handleNavigate = (page) => {
+                    const protectedPages = ['dashboard', 'admin', 'premium']; // Added premium
+                    if (protectedPages.includes(page) && !user) {
+                        setAuthModalType('login');
+                        setShowAuthModal(true);
+                        return;
+                    }
+                    if (page === 'admin' && user?.role !== 'admin') {
+                        setCurrentPage('dashboard');
+                        return;
+                    }
+                    setCurrentPage(page);
+                };
+
+                const handleAuthClick = (type) => { setAuthModalType(type); setShowAuthModal(true); };
+
+                const renderPage = () => {
+                        switch (currentPage) {
+                            case 'landing': return React.createElement(LandingPage, { onAuthClick: handleAuthClick });
+                            case 'dashboard': return React.createElement(Dashboard, { onNavigate: handleNavigate });
+                            case 'contact': return React.createElement(ContactPage, null);
+                            case 'admin': return React.createElement(AdminDashboard, null);
+                            case 'premium': return React.createElement(PremiumPage, { onNavigate: handleNavigate }); // <-- Add this case
+                            default: return React.createElement(LandingPage, { onAuthClick: handleAuthClick });
+                        }
+                    };
+
+                return (
+                    React.createElement('div', { className: "min-h-screen flex flex-col font-inter" },
+                        React.createElement('style', null, `
+                              @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@300;400;700&display=swap');
+                              body { font-family: 'Comic Neue', cursive; }
+                              .animate-fade-in-down { animation: fadeInDown 1s ease-out forwards; }
+                              .animate-fade-in-up { animation: fadeInUp 1s ease-out forwards; }
+                              .animate-fade-in-up.delay-200 { animation-delay: 0.2s; }
+                              .animate-slide-down { animation: slideDown 0.3s ease-out forwards; }
+                              @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+                              @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+                              @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+                            `
+                        ),
+                        React.createElement(Header, { currentPage: currentPage, onNavigate: handleNavigate, onAuthClick: handleAuthClick, onLogout: () => handleLogout(false) }),
+                        globalMessage && React.createElement(MessageModal, { 
+                            message: globalMessage, 
+                            type: globalMessageType, 
+                            onClose: () => setGlobalMessage(''),
+                            showCloseButton: globalMessageType !== 'success'
+                        }),
+                        renderPage(),
+                        React.createElement(Footer, null),
+                        React.createElement(AuthModal, { show: showAuthModal, onClose: () => setShowAuthModal(false), type: authModalType, onSwitchType: setAuthModalType })
+                    )
+                );
+            };
+
+            const root = ReactDOM.createRoot(document.getElementById('root'));
+            function Root() {
+                return (
+                    React.createElement(AuthProvider, null,
+                        React.createElement(ThemeProvider, null,
+                            React.createElement(App, null)
+                        )
+                    )
+                );
+            }
+            root.render(React.createElement(Root, null));
+
+        } catch (e) {
+            console.error("Critical error:", e);
+            document.getElementById('root').innerHTML = `<div style="color: red; padding: 20px; font-family: 'Comic Neue', cursive; text-align: center; background-color: #ffebeb; border: 1px solid #ff0000; border-radius: 8px; margin: 20px;">
+                                                        <h2>Oops! Something went wrong.</h2>
+                                                        <p>Error: <strong>${e.message}</strong></p>
+                                                        <p>Please check the browser console (F12) for details.</p>
+                                                        </div>`;
+        }
+    </script>
+    
+        <script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/6888ad7c0f81321928c87bda/1j1aubbo6';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,206 @@
+/* public/css/style.css */
+
+/* Basic body and HTML styling */
+html, body {
+    height: 100%; /* Ensure html and body take full viewport height */
+    /* margin, padding, and font-family are now handled by inline style in header.php with !important */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    /* display, flex-direction, min-height are now handled by inline style in header.php with !important */
+    background-color: #f3f4f6; /* Tailwind gray-100 */
+    color: #374151; /* Tailwind gray-700 */
+}
+
+/* Flex-grow for main content to push footer to bottom */
+.flex-grow {
+    flex-grow: 1;
+}
+
+/* Custom Scrollbar Styling (for better aesthetics) */
+/* For Webkit browsers (Chrome, Safari) */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px; /* For horizontal scrollbars */
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Light gray track */
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888; /* Darker gray thumb */
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Even darker on hover */
+}
+
+/* For Firefox (requires specific properties) */
+/* Note: Firefox scrollbar styling is more limited compared to Webkit */
+* {
+    scrollbar-width: thin; /* "auto" or "thin" */
+    scrollbar-color: #888 #f1f1f1; /* thumb color track color */
+}
+
+
+/* Global Message Styling (for success/error messages) */
+/* This is styled by Tailwind classes in main.js, but
+   these basic styles ensure it's positioned correctly. */
+#global-message {
+    z-index: 1000; /* Ensure it's on top of other content */
+    padding: 1rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Specific styles for success/error states (added by JS) */
+#global-message.bg-green-500 {
+    background-color: #10B981; /* Tailwind green-500 */
+}
+#global-message.bg-red-500 {
+    background-color: #EF4444; /* Tailwind red-500 */
+}
+
+/* Adjustments for smaller screens (if needed beyond Tailwind's breakpoints) */
+@media (max-width: 768px) {
+    /* Example: Adjust padding on smaller screens */
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    /* Example: Adjust font sizes if default Tailwind isn't enough */
+    h2 {
+        font-size: 2rem; /* Smaller h2 on mobile */
+    }
+}
+
+/* Additional custom styles for specific elements if Tailwind classes are insufficient */
+/* Example: Custom button hover effect not easily done with Tailwind utilities alone */
+.button-hover-effect {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.button-hover-effect:hover::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    animation: button-ripple 0.6s ease-out forwards;
+}
+
+@keyframes button-ripple {
+    to {
+        width: 200%;
+        height: 200%;
+        opacity: 0;
+    }
+}
+
+/* Styles for the testimonials carousel to ensure smooth sliding */
+#testimonials-carousel {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    width: 100%; /* Ensure the container takes full width */
+}
+
+/* Ensure individual testimonial items are full width and prevent wrapping */
+#testimonials-carousel > div {
+    flex-shrink: 0; /* Prevent items from shrinking */
+    width: 100%;    /* Each item takes 100% of the carousel width */
+}
+
+/* Testimonial pagination dots */
+#testimonials-pagination button {
+    transition: background-color 0.3s ease-in-out;
+}
+
+/* Style for the TradingView iframe to ensure it fills its container */
+iframe[title="TradingView EURUSD Chart"] {
+    display: block; /* Remove any default inline spacing */
+}
+
+/* Basic styling for form inputs to ensure consistency */
+input[type="email"],
+input[type="password"],
+input[type="text"],
+textarea {
+    /* Tailwind classes should handle most of this, but adding for explicit control */
+    padding: 0.75rem;
+    border-width: 1px;
+    border-color: #d1d5db; /* Tailwind gray-300 */
+    border-radius: 0.5rem;
+    width: 100%;
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+input:focus,
+textarea:focus {
+    outline: none;
+    border-color: #3b82f6; /* Tailwind blue-500 */
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5); /* Tailwind ring-blue-500 */
+}
+
+/* Hide scrollbar for specific elements if desired (e.g., announcements list) */
+.overflow-y-auto-no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+.overflow-y-auto-no-scrollbar::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+/* Custom Header Styles */
+.header-blue-effect {
+    background-color: #1e3a8a; /* Tailwind blue-800 */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3), inset 0 -3px 6px rgba(0, 0, 0, 0.2); /* Subtle outer and inner shadow */
+    transition: all 0.3s ease-in-out;
+}
+
+.header-blue-effect:hover {
+    background-color: #172b6b; /* Slightly darker blue on hover */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), inset 0 -4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.header-title-shadow {
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.4); /* Stronger text shadow for title */
+}
+
+.nav-link-hover-effect {
+    position: relative;
+    transition: all 0.3s ease-in-out;
+}
+
+.nav-link-hover-effect::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #90cdf4; /* Tailwind blue-300 */
+    transition: width 0.3s ease-in-out;
+}
+
+.nav-link-hover-effect:hover::after {
+    width: 100%;
+}
+
+.nav-link-hover-effect:hover {
+    transform: translateY(-2px) scale(1.02); /* Slight lift and scale on hover */
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle text shadow on hover */
+}
