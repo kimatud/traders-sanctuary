@@ -1,70 +1,53 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-// ...the rest of your script follows...
+require __DIR__ . '/api/config.php';
 header('Content-Type: application/json');
-header('Content-Type: application/json');
-
-$response = [];
-$uploadDir = 'funded certificates/';
-$jsonFile = 'certificates.json';
-
-// Create the directory if it doesn't exist
-if (!is_dir($uploadDir)) {
-    mkdir($uploadDir, 0755, true);
-}
-
-// Check if a file was uploaded
-if (isset($_FILES['certificate'])) {
-    $file = $_FILES['certificate'];
-
-    // Basic error checking
-    if ($file['error'] !== UPLOAD_ERR_OK) {
-        $response['success'] = false;
-        $response['message'] = 'File upload error.';
-        echo json_encode($response);
-        exit;
-    }
-
-    // Security: Check if it's a valid image
-    $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-    if (!in_array($file['type'], $allowedTypes)) {
-        $response['success'] = false;
-        $response['message'] = 'Invalid file type.';
-        echo json_encode($response);
-        exit;
-    }
-    
-    // Create a unique filename to prevent overwriting files
-    $fileName = uniqid() . '-' . basename($file['name']);
-    $targetPath = $uploadDir . $fileName;
-
-    // Move the file to the target directory
-    if (move_uploaded_file($file['tmp_name'], $targetPath)) {
-        // Now, update the JSON file with the new filename
-        $certificates = [];
-        if (file_exists($jsonFile)) {
-            $certificates = json_decode(file_get_contents($jsonFile), true);
+try {
+    require_admin_user();
+    $uploaded = $_FILES['certificate'] ?? $_FILES['certificate_file'] ?? null;
+    if (!$uploaded && !empty($_FILES) && is_array($_FILES)) {
+        foreach ($_FILES as $candidate) {
+            if (is_array($candidate) && !empty($candidate['tmp_name'])) { $uploaded = $candidate; break; }
         }
-        
-        // Add the new filename to the list
-        $certificates[] = $fileName;
-        
-        // Save the updated list back to the JSON file
-        file_put_contents($jsonFile, json_encode($certificates, JSON_PRETTY_PRINT));
-        
-        $response['success'] = true;
-        $response['message'] = 'Certificate uploaded successfully.';
-    } else {
-        $response['success'] = false;
-        $response['message'] = 'Failed to save the file.';
     }
-} else {
-    $response['success'] = false;
-    $response['message'] = 'No file was sent.';
+    if (!$uploaded || empty($uploaded['tmp_name'])) {
+        $contentLength = (int)($_SERVER['CONTENT_LENGTH'] ?? 0);
+        $postMax = ini_get('post_max_size') ?: 'server limit';
+        $message = $contentLength > 0
+            ? 'The certificate image did not reach the server. Please choose a smaller image or try again. Server post limit: ' . $postMax . '.'
+            : 'Please choose a certificate image.';
+        json_response(['success' => false, 'message' => $message, 'receivedFiles' => array_keys($_FILES ?? [])], 400);
+    }
+    if (($uploaded['error'] ?? UPLOAD_ERR_OK) !== UPLOAD_ERR_OK) {
+        json_response(['success' => false, 'message' => 'Certificate upload failed.'], 400);
+    }
+    $maxBytes = 10 * 1024 * 1024;
+    if (($uploaded['size'] ?? 0) > $maxBytes) {
+        json_response(['success' => false, 'message' => 'Image is too large. Maximum size is 10MB.'], 400);
+    }
+    $original = basename((string)$uploaded['name']);
+    $ext = strtolower(pathinfo($original, PATHINFO_EXTENSION));
+    $allowed = ['png','jpg','jpeg','webp','gif'];
+    if (!in_array($ext, $allowed, true)) {
+        json_response(['success' => false, 'message' => 'Only image certificates are allowed.'], 400);
+    }
+    $dir = __DIR__ . '/funded certificates';
+    if (!is_dir($dir)) @mkdir($dir, 0775, true);
+    $safeBase = preg_replace('/[^a-zA-Z0-9._-]+/', '_', pathinfo($original, PATHINFO_FILENAME));
+    $fileName = $safeBase . '_' . date('Ymd_His') . '_' . bin2hex(random_bytes(3)) . '.' . $ext;
+    $target = $dir . '/' . $fileName;
+    if (!move_uploaded_file($uploaded['tmp_name'], $target)) {
+        json_response(['success' => false, 'message' => 'Could not save certificate. Check folder permissions.'], 500);
+    }
+    @chmod($target, 0664);
+    $jsonFile = __DIR__ . '/certificates.json';
+    $list = is_file($jsonFile) ? json_decode(@file_get_contents($jsonFile) ?: '[]', true) : [];
+    if (!is_array($list)) $list = [];
+    array_unshift($list, $fileName);
+    $list = array_values(array_unique($list));
+    file_put_contents($jsonFile, json_encode($list, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES), LOCK_EX);
+    @chmod($jsonFile, 0664);
+    json_response(['success' => true, 'message' => 'Certificate uploaded successfully.', 'fileName' => $fileName]);
+} catch (Throwable $e) {
+    api_log('upload_certificate error: ' . $e->getMessage());
+    json_response(['success' => false, 'message' => 'Server error while uploading certificate.'], 500);
 }
-
-echo json_encode($response);
-?>

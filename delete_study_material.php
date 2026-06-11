@@ -1,51 +1,26 @@
 <?php
-header("Content-Type: application/json");
-
-// Allow requests from any origin
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: POST, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type");
-
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    exit(0);
-}
-
-$response = ['success' => false, 'message' => 'An unknown error occurred.'];
-$data = json_decode(file_get_contents('php://input'), true);
-
-if (isset($data['id']) && isset($data['fileName'])) {
-    $id_to_delete = $data['id'];
-    $filename_to_delete = $data['fileName'];
-    $file_path = 'study_materials/' . $filename_to_delete;
-
-    // Delete the file
-    if (file_exists($file_path)) {
-        unlink($file_path);
+require __DIR__ . '/api/config.php';
+header('Content-Type: application/json');
+try {
+    require_admin_user();
+    $payload = read_json_body();
+    $id = trim((string)($payload['id'] ?? ''));
+    $fileName = basename((string)($payload['fileName'] ?? ''));
+    $store = __DIR__ . '/api/_data/study_materials.json';
+    $items = is_file($store) ? json_decode(@file_get_contents($store) ?: '[]', true) : [];
+    if (!is_array($items)) $items = [];
+    $next = [];
+    foreach ($items as $item) {
+        if (($item['id'] ?? '') === $id || ($fileName && ($item['fileName'] ?? '') === $fileName)) continue;
+        $next[] = $item;
     }
-
-    // Update the JSON database
-    $json_file_path = 'study_materials/study_materials.json';
-    if (file_exists($json_file_path)) {
-        $materials = json_decode(file_get_contents($json_file_path), true);
-        
-        $updated_materials = array_filter($materials, function($material) use ($id_to_delete) {
-            return $material['id'] !== $id_to_delete;
-        });
-
-        // Re-index the array to prevent it from becoming an object
-        $updated_materials = array_values($updated_materials);
-
-        if (file_put_contents($json_file_path, json_encode($updated_materials, JSON_PRETTY_PRINT))) {
-            $response = ['success' => true, 'message' => 'Material deleted successfully.'];
-        } else {
-            $response['message'] = 'Failed to update the database file.';
-        }
-    } else {
-         $response = ['success' => true, 'message' => 'Material deleted, database file not found.'];
+    if ($fileName !== '') {
+        $path = __DIR__ . '/study materials/' . $fileName;
+        if (is_file($path)) @unlink($path);
     }
-} else {
-    $response['message'] = 'Required ID not provided.';
+    file_put_contents($store, json_encode(array_values($next), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES), LOCK_EX);
+    json_response(['success' => true, 'message' => 'Study material deleted successfully.']);
+} catch (Throwable $e) {
+    api_log('delete_study_material error: ' . $e->getMessage());
+    json_response(['success' => false, 'message' => 'Server error while deleting material.'], 500);
 }
-
-echo json_encode($response);
-?>

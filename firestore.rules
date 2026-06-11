@@ -1,0 +1,176 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // --- GLOBAL HELPERS ---
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isAppCheckVerified() {
+      return request.appCheck != null;
+    }
+
+    function appUserProfilePath(userId) {
+      return /databases/$(database)/documents/artifacts/traders-sanctuary/users/$(userId)/profile/data;
+    }
+
+    function isOwner(userId) {
+      return signedIn() && request.auth.uid == userId;
+    }
+
+    // Primary admin detection used by the admin dashboard and diagnostics page.
+    function isAdmin() {
+      return signedIn() &&
+             exists(appUserProfilePath(request.auth.uid)) &&
+             get(appUserProfilePath(request.auth.uid)).data.role == 'admin';
+    }
+
+    function ownerOrAdmin(userId) {
+      return isOwner(userId) || isAdmin();
+    }
+
+    // Bootstrap email must match api/config.php ADMIN_EMAILS.
+    // This lets the first admin create/repair their own /profile/data doc before isAdmin() can pass.
+    function isBootstrapAdminEmail() {
+      return signedIn() &&
+             request.auth.token.email in ['denniskimatu4028@gmail.com'];
+    }
+
+    function roleUnchanged() {
+      return !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role']);
+    }
+
+    function validSelfProfileRole() {
+      return request.resource.data.role in ['member', 'premium'];
+    }
+
+    function validBootstrapAdminProfile(userId) {
+      return isOwner(userId) &&
+             isBootstrapAdminEmail() &&
+             request.resource.data.role == 'admin' &&
+             request.resource.data.email == request.auth.token.email &&
+             request.resource.data.keys().hasAll(['email', 'role', 'displayName']);
+    }
+
+    // --- PORTFOLIO & GENERAL ---
+    match /projects/{projectId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /messages/{messageId} {
+      allow create: if true;
+      allow read, delete: if signedIn() &&
+        (
+          request.auth.uid == resource.data.senderId ||
+          request.auth.uid == resource.data.clientId ||
+          isAdmin()
+        );
+      allow update: if isAdmin();
+    }
+
+    // --- TRADERS SANCTUARY USER DATA ---
+    match /artifacts/traders-sanctuary/users/{userId} {
+      allow read: if ownerOrAdmin(userId);
+      allow create: if isOwner(userId) || isAdmin();
+      allow update, delete: if isAdmin();
+
+      match /profile/data {
+        allow read: if ownerOrAdmin(userId) || validBootstrapAdminProfile(userId);
+
+        // Normal member/premium self-profile creation. Users cannot self-promote to admin here.
+        allow create: if isOwner(userId) &&
+          request.resource.data.keys().hasAll(['email', 'role', 'createdAt', 'displayName']) &&
+          validSelfProfileRole();
+
+        // First-admin bootstrap/repair path used by the diagnostics Bootstrap Admin button.
+        allow create: if validBootstrapAdminProfile(userId);
+
+        // Existing admins can repair any profile.
+        allow create: if isAdmin();
+
+        // Owners can edit their own safe fields. Role changes are admin-only, except the bootstrap email may set its own admin role.
+        allow update: if signedIn() &&
+          ownerOrAdmin(userId) &&
+          (roleUnchanged() || isAdmin() || validBootstrapAdminProfile(userId));
+
+        allow delete: if isAdmin();
+      }
+
+      match /trading_notes/{noteId} {
+        allow read, write: if ownerOrAdmin(userId);
+      }
+
+      match /premium_journal/{journalId} {
+        allow read: if ownerOrAdmin(userId);
+
+        allow create: if ownerOrAdmin(userId) &&
+          request.resource.data.keys().hasAll([
+            'pair',
+            'entryPrice',
+            'exitPrice',
+            'tradeType',
+            'status',
+            'pnl',
+            'date',
+            'setup',
+            'execution',
+            'management',
+            'notes'
+          ]);
+
+        allow update, delete: if ownerOrAdmin(userId);
+      }
+
+      match /trading_accounts/{accountId} {
+        allow read, write: if ownerOrAdmin(userId);
+      }
+
+      // Optional user-owned metadata mirrors.
+      match /study_materials/{docId} {
+        allow read, write: if ownerOrAdmin(userId);
+      }
+
+      match /certificates/{docId} {
+        allow read, write: if ownerOrAdmin(userId);
+      }
+    }
+
+    // --- ADMIN COLLECTION-GROUP PROFILE READS ---
+    // Allows admin dashboard collectionGroup('profile') reads without exposing users to each other.
+    match /{path=**}/profile/{docId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // --- PUBLIC DATA & SUBSCRIPTIONS ---
+    match /artifacts/traders-sanctuary/public/data/subscriptions/{docId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    match /artifacts/traders-sanctuary/public/data/announcements/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /artifacts/traders-sanctuary/public/data/testimonials/{docId} {
+      allow read: if true;
+      allow create: if signedIn() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAdmin();
+    }
+
+    // Optional public metadata collections if admin uploads are mirrored to Firestore.
+    match /artifacts/traders-sanctuary/public/data/study_materials/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /artifacts/traders-sanctuary/public/data/certificates/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}

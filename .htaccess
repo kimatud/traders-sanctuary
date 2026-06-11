@@ -1,58 +1,89 @@
-# This enables the rewrite engine
-RewriteEngine On
-
-# ----------------------------------------------------------------------
-# RULE 1: Force all traffic to use HTTPS (Secure Connection)
-# This part from your old file is good, so we're keeping it.
-RewriteCond %{HTTPS} off
-RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-
-# ----------------------------------------------------------------------
-# RULE 2: Handle Single-Page App (SPA) Routing
-# THIS IS THE NEW PART THAT FIXES THE 404 ERROR ON RELOAD.
-# It tells the server to send all requests that are not for a real 
-# file or directory to your main react_app.html file.
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule . /react_app.html [L]
-
-# ----------------------------------------------------------------------
-# The rest of the file is for your server's PHP configuration.
-# It's best to leave it as is.
-
-# php -- BEGIN cPanel-generated handler, do not edit
-# Set the “ea-php81” package as the default “PHP” programming language.
-<IfModule mime_module>
-  AddHandler application/x-httpd-ea-php81 .php .php8 .phtml
+# Firebase/Google popup auth compatibility.
+<IfModule mod_headers.c>
+  Header always set Cross-Origin-Opener-Policy "unsafe-none"
+  Header always set Cross-Origin-Embedder-Policy "unsafe-none"
+  Header always set Cross-Origin-Resource-Policy "cross-origin"
 </IfModule>
-# php -- END cPanel-generated handler, do not edit
 
-# BEGIN cPanel-generated php ini directives, do not edit
-# Manual editing of this file may result in unexpected behavior.
-# To make changes to this file, use the cPanel MultiPHP INI Editor (Home >> Software >> MultiPHP INI Editor)
-# For more information, read our documentation (https://go.cpanel.net/EA4ModifyINI)
-<IfModule php8_module>
-   php_flag display_errors On
-   php_value max_execution_time 300
-   php_value max_input_time 600
-   php_value max_input_vars 1000
-   php_value memory_limit 1024M
-   php_value post_max_size 512M
-   php_value session.gc_maxlifetime 1440
-   php_value session.save_path "/var/cpanel/php/sessions/ea-php81"
-   php_value upload_max_filesize 512M
-   php_flag zlib.output_compression Off
+Options -Indexes
+DirectoryIndex index.html
+
+<IfModule mod_headers.c>
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  # Recovery mode: do not send an app-level CSP from this package.
+  # A stale/strict CSP was blocking Tailwind, data fonts, Google/Firebase auth, and TwelveData.
+  # If the browser still reports CSP after this file is deployed, the CSP is being injected by hosting/CDN config.
+  Header unset Content-Security-Policy
+  Header always unset Content-Security-Policy
+  Header unset Content-Security-Policy-Report-Only
+  Header always unset Content-Security-Policy-Report-Only
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
 </IfModule>
-<IfModule lsapi_module>
-   php_flag display_errors On
-   php_value max_execution_time 300
-   php_value max_input_time 600
-   php_value max_input_vars 1000
-   php_value memory_limit 1024M
-   php_value post_max_size 512M
-   php_value session.gc_maxlifetime 1440
-   php_value session.save_path "/var/cpanel/php/sessions/ea-php81"
-   php_value upload_max_filesize 512M
-   php_flag zlib.output_compression Off
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Let real files and directories load normally.
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Keep API/PHP endpoints untouched.
+  RewriteRule ^api/ - [L]
+  RewriteRule ^(.*\.php)$ - [L]
+
+  # Send React routes like /dashboard, /admin, /agreement back to index.html.
+  RewriteRule ^ index.html [L]
 </IfModule>
-# END cPanel-generated php ini directives, do not edit
+
+# Production performance headers: compress text assets and cache static resources safely.
+<IfModule mod_brotli.c>
+  AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/css text/javascript application/javascript application/json application/xml image/svg+xml
+</IfModule>
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/javascript application/javascript application/json application/xml image/svg+xml
+</IfModule>
+
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/html "access plus 0 seconds"
+  ExpiresByType application/javascript "access plus 7 days"
+  ExpiresByType text/javascript "access plus 7 days"
+  ExpiresByType text/css "access plus 7 days"
+  ExpiresByType image/svg+xml "access plus 30 days"
+  ExpiresByType image/png "access plus 30 days"
+  ExpiresByType image/jpeg "access plus 30 days"
+  ExpiresByType image/webp "access plus 30 days"
+  ExpiresByType application/pdf "access plus 30 days"
+</IfModule>
+
+<IfModule mod_headers.c>
+  <FilesMatch "\.(js|css|png|jpe?g|webp|svg|pdf)$">
+    Header always set Cache-Control "public, max-age=604800, stale-while-revalidate=86400"
+  </FilesMatch>
+  <FilesMatch "\.(html)$">
+    Header always set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+  </FilesMatch>
+  <FilesMatch "\.(php)$">
+    Header always set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+  </FilesMatch>
+</IfModule>
+
+# Never expose private cleanup notes or local secret files.
+<IfModule mod_rewrite.c>
+  RewriteRule ^(_removed_notes|api/_data)(/|$) - [F,L]
+</IfModule>
+<FilesMatch "^(env\.local\.php|.*\.log|.*\.json)$">
+  Require all denied
+</FilesMatch>
+
+# Certificate uploads: only applies on mod_php hosts; harmlessly ignored elsewhere.
+<IfModule mod_php.c>
+  php_value upload_max_filesize 16M
+  php_value post_max_size 18M
+  php_value max_execution_time 120
+  php_value max_input_time 120
+</IfModule>

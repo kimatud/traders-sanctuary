@@ -1,40 +1,20 @@
 <?php
+require __DIR__ . '/api/config.php';
 header('Content-Type: application/json');
-
-$response = [];
-$uploadDir = 'funded certificates/';
-$jsonFile = 'certificates.json';
-
-// Get the filename from the POST request
-$data = json_decode(file_get_contents('php://input'), true);
-$fileName = $data['fileName'] ?? null;
-
-if ($fileName) {
-    $filePath = $uploadDir . $fileName;
-
-    // Security check: make sure the file path is within the intended directory
-    if (strpos(realpath($filePath), realpath($uploadDir)) === 0 && file_exists($filePath)) {
-        // Delete the physical file
-        unlink($filePath);
-
-        // Update the JSON file
-        if (file_exists($jsonFile)) {
-            $certificates = json_decode(file_get_contents($jsonFile), true);
-            // Remove the filename from the array
-            $certificates = array_values(array_diff($certificates, [$fileName]));
-            file_put_contents($jsonFile, json_encode($certificates, JSON_PRETTY_PRINT));
-        }
-
-        $response['success'] = true;
-        $response['message'] = 'Certificate deleted successfully.';
-    } else {
-        $response['success'] = false;
-        $response['message'] = 'File not found or invalid path.';
-    }
-} else {
-    $response['success'] = false;
-    $response['message'] = 'No filename provided.';
+try {
+    require_admin_user();
+    $payload = read_json_body();
+    $fileName = basename((string)($payload['fileName'] ?? ''));
+    if ($fileName === '') json_response(['success' => false, 'message' => 'Missing certificate filename.'], 400);
+    $path = __DIR__ . '/funded certificates/' . $fileName;
+    if (is_file($path)) @unlink($path);
+    $jsonFile = __DIR__ . '/certificates.json';
+    $list = is_file($jsonFile) ? json_decode(@file_get_contents($jsonFile) ?: '[]', true) : [];
+    if (!is_array($list)) $list = [];
+    $list = array_values(array_filter($list, fn($x) => basename((string)$x) !== $fileName));
+    file_put_contents($jsonFile, json_encode($list, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES), LOCK_EX);
+    json_response(['success' => true, 'message' => 'Certificate deleted successfully.']);
+} catch (Throwable $e) {
+    api_log('delete_certificate error: ' . $e->getMessage());
+    json_response(['success' => false, 'message' => 'Server error while deleting certificate.'], 500);
 }
-
-echo json_encode($response);
-?>
