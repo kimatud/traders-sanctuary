@@ -11,6 +11,8 @@ Traders Sanctuary is a **modern, single-page React application** with a PHP back
 
 It supports **multiple themes** — Light, Dark, and System — for a personalized user experience.
 
+Build handoff page: [`build-process-template.html`](build-process-template.html)
+
 ---
 
 ## 📸 Site Preview (Dark Mode)

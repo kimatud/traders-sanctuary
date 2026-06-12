@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Traders Sanctuary - Build Process Template</title>
+  <meta name="description" content="A Traders Sanctuary styled website template that documents the audit, security cleanup, GitHub sync, and upgrade workflow.">
+  <meta name="theme-color" content="#020617">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-soft: #eef6ff;
+      --ink: #0f172a;
+      --muted: #475569;
+      --line: rgba(15, 23, 42, 0.14);
+      --blue: #2563eb;
+      --cyan: #06b6d4;
+      --green: #10b981;
+      --gold: #d6a23a;
+      --danger: #dc2626;
+      --shadow: 0 18px 48px rgba(15, 23, 42, 0.10);
+      --radius: 8px;
+      --max: 1180px;
+    }
+
+    html.dark {
+      --bg: #020617;
+      --surface: #101827;
+      --surface-soft: #172033;
+      --ink: #f8fafc;
+      --muted: #cbd5e1;
+      --line: rgba(148, 163, 184, 0.22);
+      --shadow: 0 20px 58px rgba(0, 0, 0, 0.36);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Segoe UI", Arial, sans-serif;
+      line-height: 1.55;
+      letter-spacing: 0;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    .skip-link {
+      position: absolute;
+      left: 1rem;
+      top: -4rem;
+      z-index: 100;
+      padding: 0.6rem 0.8rem;
+      border-radius: var(--radius);
+      background: var(--ink);
+      color: var(--bg);
+      font-weight: 800;
+    }
+
+    .skip-link:focus {
+      top: 1rem;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      border-bottom: 1px solid var(--line);
+      background: color-mix(in srgb, var(--bg) 88%, transparent);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: var(--shadow);
+    }
+
+    .nav-shell {
+      width: min(var(--max), calc(100% - 2rem));
+      margin: 0 auto;
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius);
+      display: inline-grid;
+      place-items: center;
+      flex: 0 0 auto;
+      background: linear-gradient(135deg, var(--blue), #0f766e);
+      color: #ffffff;
+      font-weight: 950;
+      box-shadow: 0 12px 24px rgba(37, 99, 235, 0.25);
+    }
+
+    html.dark .brand-mark {
+      background: linear-gradient(135deg, #38bdf8, var(--green));
+      color: #020617;
+    }
+
+    .brand-title {
+      display: block;
+      font-size: 1.15rem;
+      font-weight: 950;
+      line-height: 1;
+    }
+
+    .brand-kicker {
+      display: block;
+      margin-top: 0.2rem;
+      color: var(--green);
+      font-size: 0.72rem;
+      font-weight: 850;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .nav-link,
+    .icon-button,
+    .action-button {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--ink);
+      font: inherit;
+      font-weight: 850;
+      min-height: 40px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      cursor: pointer;
+      transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
+    }
+
+    .nav-link {
+      padding: 0.56rem 0.75rem;
+    }
+
+    .icon-button {
+      width: 42px;
+      padding: 0;
+    }
+
+    .action-button {
+      padding: 0.72rem 0.9rem;
+    }
+
+    .nav-link:hover,
+    .icon-button:hover,
+    .action-button:hover {
+      transform: translateY(-1px);
+      border-color: color-mix(in srgb, var(--blue) 42%, var(--line));
+      color: var(--blue);
+    }
+
+    html.dark .nav-link:hover,
+    html.dark .icon-button:hover,
+    html.dark .action-button:hover {
+      color: #a7f3d0;
+      border-color: rgba(167, 243, 208, 0.34);
+    }
+
+    .action-button.primary {
+      border-color: rgba(255, 255, 255, 0.25);
+      background: linear-gradient(135deg, var(--blue), #0f766e);
+      color: #ffffff;
+      box-shadow: 0 14px 30px rgba(37, 99, 235, 0.28);
+    }
+
+    .action-button.primary:hover {
+      color: #ffffff;
+      filter: saturate(1.08) brightness(1.04);
+    }
+
+    .lucide {
+      width: 18px;
+      height: 18px;
+      stroke-width: 2.4;
+      flex: 0 0 auto;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      min-height: 72svh;
+      border-bottom: 1px solid var(--line);
+      background:
+        linear-gradient(135deg, rgba(2, 6, 23, 0.92), rgba(15, 23, 42, 0.82)),
+        linear-gradient(90deg, #020617, #0f172a);
+      color: #ffffff;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(90deg, rgba(2, 6, 23, 0.86), rgba(2, 6, 23, 0.22)),
+        url("assets/ts-panther-steel-transparent.png");
+      background-repeat: no-repeat;
+      background-size: auto 78%, auto 70%;
+      background-position: center, right 8% center;
+      opacity: 0.72;
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      width: min(var(--max), calc(100% - 2rem));
+      min-height: 72svh;
+      margin: 0 auto;
+      display: grid;
+      align-content: center;
+      padding: 4rem 0 5rem;
+      max-width: 1180px;
+    }
+
+    .eyebrow {
+      width: fit-content;
+      margin: 0 0 1rem;
+      border: 1px solid rgba(167, 243, 208, 0.34);
+      border-radius: var(--radius);
+      padding: 0.35rem 0.55rem;
+      background: rgba(16, 185, 129, 0.10);
+      color: #a7f3d0;
+      font-size: 0.78rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    h1 {
+      max-width: 760px;
+      margin: 0;
+      font-size: 4.25rem;
+      line-height: 0.96;
+      font-weight: 950;
+      letter-spacing: 0;
+      overflow-wrap: break-word;
+    }
+
+    .headline-line {
+      display: block;
+    }
+
+    .hero-copy {
+      max-width: 670px;
+      margin: 1.2rem 0 0;
+      color: #dbeafe;
+      font-size: 1.1rem;
+      overflow-wrap: break-word;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      margin-top: 1.65rem;
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.75rem;
+      max-width: 780px;
+      margin-top: 2rem;
+    }
+
+    .stat {
+      min-height: 92px;
+      border: 1px solid rgba(148, 163, 184, 0.24);
+      border-radius: var(--radius);
+      background: rgba(15, 23, 42, 0.58);
+      padding: 0.9rem;
+    }
+
+    .stat strong {
+      display: block;
+      color: #ffffff;
+      font-size: 1.45rem;
+      line-height: 1;
+      font-weight: 950;
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 0.4rem;
+      color: #bfdbfe;
+      font-size: 0.83rem;
+      font-weight: 750;
+    }
+
+    .section {
+      border-bottom: 1px solid var(--line);
+      padding: 4.5rem 0;
+      background: var(--bg);
+    }
+
+    .section.alt {
+      background: var(--surface-soft);
+    }
+
+    .section-inner {
+      width: min(var(--max), calc(100% - 2rem));
+      margin: 0 auto;
+    }
+
+    .section-head {
+      max-width: 760px;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-label {
+      margin: 0 0 0.55rem;
+      color: var(--blue);
+      font-size: 0.78rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    html.dark .section-label {
+      color: #a7f3d0;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 2.25rem;
+      line-height: 1.05;
+      font-weight: 950;
+      letter-spacing: 0;
+    }
+
+    .section-copy {
+      margin: 0.85rem 0 0;
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 760px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .grid.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .grid.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      padding: 1.1rem;
+      min-width: 0;
+    }
+
+    .card h3 {
+      margin: 0;
+      font-size: 1.08rem;
+      line-height: 1.2;
+      font-weight: 950;
+    }
+
+    .card p {
+      margin: 0.65rem 0 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .mini-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-bottom: 0.65rem;
+      color: var(--green);
+      font-size: 0.76rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 0.85rem;
+      counter-reset: step;
+    }
+
+    .timeline-item {
+      position: relative;
+      display: grid;
+      grid-template-columns: 48px minmax(0, 1fr);
+      gap: 0.9rem;
+      align-items: start;
+    }
+
+    .timeline-item::before {
+      counter-increment: step;
+      content: counter(step);
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius);
+      display: inline-grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--blue), var(--green));
+      color: #ffffff;
+      font-weight: 950;
+      box-shadow: 0 12px 24px rgba(37, 99, 235, 0.25);
+    }
+
+    .timeline-copy {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      padding: 1rem;
+    }
+
+    .timeline-copy h3 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 950;
+    }
+
+    .timeline-copy p {
+      margin: 0.45rem 0 0;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .checklist {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75rem;
+      margin: 0;
+      padding: 0;
+    }
+
+    .checklist li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.65rem;
+      min-height: 74px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      padding: 0.9rem;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .checklist .dot {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      display: inline-grid;
+      place-items: center;
+      flex: 0 0 auto;
+      margin-top: 0.1rem;
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--green);
+      font-weight: 950;
+    }
+
+    .ledger {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .ledger th,
+    .ledger td {
+      padding: 0.85rem;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .ledger th {
+      color: var(--ink);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0;
+      background: color-mix(in srgb, var(--surface-soft) 80%, var(--surface));
+    }
+
+    .ledger td {
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .ledger tr:last-child td {
+      border-bottom: 0;
+    }
+
+    code {
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: color-mix(in srgb, var(--surface-soft) 86%, var(--surface));
+      color: var(--ink);
+      padding: 0.12rem 0.32rem;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.9em;
+    }
+
+    .callout {
+      border: 1px solid rgba(214, 162, 58, 0.42);
+      border-left: 6px solid var(--gold);
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--gold) 10%, var(--surface));
+      padding: 1rem;
+      color: var(--muted);
+    }
+
+    .callout strong {
+      color: var(--ink);
+    }
+
+    .site-footer {
+      padding: 2rem 0;
+      background: #020617;
+      color: #cbd5e1;
+    }
+
+    .footer-inner {
+      width: min(var(--max), calc(100% - 2rem));
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-inner a {
+      color: #a7f3d0;
+      font-weight: 850;
+    }
+
+    @media (max-width: 900px) {
+      .nav-shell {
+        align-items: flex-start;
+        min-height: auto;
+        padding: 0.8rem 0;
+        flex-direction: column;
+      }
+
+      .nav-actions {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      .hero,
+      .hero-inner {
+        min-height: 68svh;
+      }
+
+      .hero::before {
+        background-position: center, right -10rem bottom 1rem;
+        background-size: auto 100%, auto 56%;
+      }
+
+      h1 {
+        font-size: 3rem;
+      }
+
+      h2 {
+        font-size: 1.8rem;
+      }
+
+      .hero-stats,
+      .grid.three,
+      .grid.two,
+      .checklist {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .nav-shell,
+      .hero-inner,
+      .section-inner,
+      .footer-inner {
+        width: 300px !important;
+        max-width: calc(100vw - 2rem) !important;
+      }
+
+      .nav-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .nav-link {
+        width: 100%;
+        flex: none;
+        min-width: 0;
+        white-space: normal;
+        text-align: center;
+      }
+
+      .icon-button {
+        width: 100%;
+      }
+
+      .hero,
+      .hero-inner {
+        min-height: auto;
+      }
+
+      .hero-inner {
+        padding: 3.25rem 0 3.5rem;
+      }
+
+      .hero::before {
+        background-position: center, right -8rem bottom 0.5rem;
+        background-size: auto 100%, auto 42%;
+      }
+
+      h1 {
+        font-size: 1.82rem;
+        line-height: 1.08;
+      }
+
+      .hero-copy {
+        font-size: 1rem;
+      }
+
+      .hero-actions .action-button {
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .hero-stats,
+      .grid.three,
+      .grid.two,
+      .checklist {
+        grid-template-columns: 1fr;
+      }
+
+      .section {
+        padding: 3.25rem 0;
+      }
+
+      .timeline-item {
+        grid-template-columns: 40px minmax(0, 1fr);
+      }
+
+      .timeline-item::before {
+        width: 40px;
+        height: 40px;
+      }
+
+      .ledger {
+        display: block;
+        overflow-x: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <nav class="nav-shell" aria-label="Build process navigation">
+      <a class="brand" href="index.html" aria-label="Traders Sanctuary home">
+        <span class="brand-mark">TS</span>
+        <span>
+          <span class="brand-title">Traders Sanctuary</span>
+          <span class="brand-kicker">Build Handoff</span>
+        </span>
+      </a>
+      <div class="nav-actions">
+        <a class="nav-link" href="#process">Process</a>
+        <a class="nav-link" href="#security">Security</a>
+        <a class="nav-link" href="#checks">Checks</a>
+        <a class="nav-link" href="#upgrade-flow">Upgrade Flow</a>
+        <button class="icon-button" type="button" id="themeToggle" aria-label="Toggle color theme" title="Toggle color theme">
+          <i data-lucide="sun-moon" aria-hidden="true"></i>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="pageTitle">
+      <div class="hero-inner">
+        <p class="eyebrow">2026 Build Process Template</p>
+        <h1 id="pageTitle">
+          <span class="headline-line">How the Traders</span>
+          <span class="headline-line">Sanctuary build was</span>
+          <span class="headline-line">audited, secured,</span>
+          <span class="headline-line">and synced.</span>
+        </h1>
+        <p class="hero-copy">
+          This page is a reusable project handoff template for explaining what changed, how it was checked, what stayed protected, and how future upgrades should move from local work to GitHub without losing momentum.
+        </p>
+        <div class="hero-actions" aria-label="Primary actions">
+          <a class="action-button primary" href="index.html">
+            <i data-lucide="arrow-left" aria-hidden="true"></i>
+            Back to App
+          </a>
+          <a class="action-button" href="#checks">
+            <i data-lucide="shield-check" aria-hidden="true"></i>
+            View Checks
+          </a>
+        </div>
+        <div class="hero-stats" aria-label="Audit summary">
+          <div class="stat">
+            <strong>27</strong>
+            <span>inline script blocks parsed</span>
+          </div>
+          <div class="stat">
+            <strong>102</strong>
+            <span>style blocks balanced</span>
+          </div>
+          <div class="stat">
+            <strong>38</strong>
+            <span>PHP files linted clean</span>
+          </div>
+          <div class="stat">
+            <strong>0</strong>
+            <span>new secret files committed</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="process">
+      <div class="section-inner">
+        <div class="section-head">
+          <p class="section-label">What Happened</p>
+          <h2>The work was handled as a stability-first handoff.</h2>
+          <p class="section-copy">
+            The goal was to preserve the working app, verify the bundle before upgrades, sync it to GitHub, and remove exposed credentials from the current repo state before new feature work continued.
+          </p>
+        </div>
+        <div class="timeline">
+          <article class="timeline-item">
+            <div class="timeline-copy">
+              <h3>Bundle intake and source audit</h3>
+              <p>The provided ZIP was extracted into a clean workspace, then the current single-page app, PHP endpoints, assets, manifest, and Firestore rules were inspected before any upgrade work began.</p>
+            </div>
+          </article>
+          <article class="timeline-item">
+            <div class="timeline-copy">
+              <h3>Runtime and syntax checks</h3>
+              <p>Inline JavaScript, CSS style blocks, PHP files, API action names, and smoke endpoints were checked so obvious breakage could be caught before publishing.</p>
+            </div>
+          </article>
+          <article class="timeline-item">
+            <div class="timeline-copy">
+              <h3>GitHub sync</h3>
+              <p>The current app bundle was staged intentionally, committed to <code>main</code>, and pushed to <code>kimatud/traders-sanctuary</code> as the new baseline.</p>
+            </div>
+          </article>
+          <article class="timeline-item">
+            <div class="timeline-copy">
+              <h3>Secret cleanup</h3>
+              <p>Local secret patterns were protected with <code>.gitignore</code>, <code>serviceAccountKey.json</code> was removed from the current repo, and real environment files were kept out of the committed bundle.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt" id="security">
+      <div class="section-inner">
+        <div class="section-head">
+          <p class="section-label">Security Posture</p>
+          <h2>Secrets belong in server config, not the website bundle.</h2>
+          <p class="section-copy">
+            The current repo state should carry code, placeholders, and safe examples only. Real Firebase, SMTP, OAuth, cron, payment, and API credentials should live in protected hosting environment configuration.
+          </p>
+        </div>
+        <div class="grid three">
+          <article class="card">
+            <span class="mini-kicker"><i data-lucide="lock-keyhole" aria-hidden="true"></i> Protected</span>
+            <h3>Real keys are ignored</h3>
+            <p><code>api/env.local.php</code>, <code>serviceAccountKey.json</code>, Firebase service account JSON files, logs, local databases, and upload runtime folders are excluded from future commits.</p>
+          </article>
+          <article class="card">
+            <span class="mini-kicker"><i data-lucide="file-check-2" aria-hidden="true"></i> Committed</span>
+            <h3>Safe examples remain</h3>
+            <p><code>api/env.local.php.example</code> stays in the repo so deployment settings are documented without exposing private values.</p>
+          </article>
+          <article class="card">
+            <span class="mini-kicker"><i data-lucide="rotate-cw" aria-hidden="true"></i> Rotated</span>
+            <h3>Old keys are treated as burned</h3>
+            <p>Any key that ever appeared in repo history should be deleted or rotated in Firebase or Google Cloud. Removing it from the current tree is helpful; rotation is the real protection.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="checks">
+      <div class="section-inner">
+        <div class="section-head">
+          <p class="section-label">Verification</p>
+          <h2>The baseline was checked before it became the working point.</h2>
+          <p class="section-copy">
+            These checks are the repeatable gate before each upgrade commit. They keep syntax, endpoint routing, and deployment readiness from drifting while new features are added.
+          </p>
+        </div>
+        <ul class="checklist" aria-label="Verification checklist">
+          <li><span class="dot">✓</span><span>JavaScript parse check passed for all executable inline scripts in <code>index.html</code>.</span></li>
+          <li><span class="dot">✓</span><span>CSS style blocks had balanced braces and parsed without structural failures.</span></li>
+          <li><span class="dot">✓</span><span>PHP lint passed across the current bundle files.</span></li>
+          <li><span class="dot">✓</span><span>Local smoke checks returned HTTP 200 for core app and API endpoints.</span></li>
+          <li><span class="dot">✓</span><span>Frontend <code>apiData</code> actions matched backend handlers.</span></li>
+          <li><span class="dot">✓</span><span><code>site.webmanifest</code> and <code>firestore.rules</code> were structurally checked.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section alt" id="upgrade-flow">
+      <div class="section-inner">
+        <div class="section-head">
+          <p class="section-label">Upgrade Flow</p>
+          <h2>Future changes should move in small, verified releases.</h2>
+          <p class="section-copy">
+            Each upgrade should have a clear purpose, focused files, a quick local check, and a GitHub push once the work is stable. That keeps the repo active and prevents duplicate manual uploads.
+          </p>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <span class="mini-kicker"><i data-lucide="git-branch" aria-hidden="true"></i> Development rhythm</span>
+            <h3>Make one clean change at a time</h3>
+            <p>Start from a clean <code>main</code>, edit only the files needed for the feature, run the focused checks, then commit with a message that describes the upgrade clearly.</p>
+          </article>
+          <article class="card">
+            <span class="mini-kicker"><i data-lucide="activity" aria-hidden="true"></i> Stability rhythm</span>
+            <h3>Keep the app working between steps</h3>
+            <p>For frontend changes, verify layout at desktop and mobile widths. For backend changes, smoke the affected endpoints and check that auth or role gates still behave as expected.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="ledger">
+      <div class="section-inner">
+        <div class="section-head">
+          <p class="section-label">Current Ledger</p>
+          <h2>The GitHub baseline is documented here.</h2>
+          <p class="section-copy">
+            This table can be copied forward for future release notes. Keep it short, factual, and tied to commits or checks that actually happened.
+          </p>
+        </div>
+        <table class="ledger">
+          <thead>
+            <tr>
+              <th scope="col">Area</th>
+              <th scope="col">Status</th>
+              <th scope="col">Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>App baseline</td>
+              <td>Synced</td>
+              <td>Current bundle committed as <code>41055ba</code> with root app files, PHP endpoints, assets, manifest, and Firestore rules.</td>
+            </tr>
+            <tr>
+              <td>Credential cleanup</td>
+              <td>Current tree clean</td>
+              <td><code>serviceAccountKey.json</code> removed from the current branch in <code>10d9be5</code>; real keys should remain rotated or deleted.</td>
+            </tr>
+            <tr>
+              <td>Known follow-ups</td>
+              <td>Planned</td>
+              <td>Move charset earlier in <code>index.html</code>, reduce CDN risk before production hardening, and configure private production environment values on the host.</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="callout" style="margin-top: 1rem;">
+          <strong>Template rule:</strong> document only safe facts here. Do not paste private keys, tokens, account secrets, raw logs, or user data into a public handoff page.
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p>Traders Sanctuary build handoff template.</p>
+      <a href="index.html">Return to the live app</a>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>
+    (function () {
+      var storageKey = 'ts-build-template-theme';
+      var root = document.documentElement;
+      var savedTheme = null;
+
+      try {
+        savedTheme = localStorage.getItem(storageKey);
+      } catch (error) {
+        savedTheme = null;
+      }
+
+      if (savedTheme === 'light') {
+        root.classList.remove('dark');
+      } else {
+        root.classList.add('dark');
+      }
+
+      function refreshIcons() {
+        if (window.lucide && typeof window.lucide.createIcons === 'function') {
+          window.lucide.createIcons();
+        }
+      }
+
+      var themeToggle = document.getElementById('themeToggle');
+      if (themeToggle) {
+        themeToggle.addEventListener('click', function () {
+          var isDark = root.classList.toggle('dark');
+          try {
+            localStorage.setItem(storageKey, isDark ? 'dark' : 'light');
+          } catch (error) {}
+          themeToggle.setAttribute('aria-pressed', String(isDark));
+          refreshIcons();
+        });
+        themeToggle.setAttribute('aria-pressed', String(root.classList.contains('dark')));
+      }
+
+      refreshIcons();
+    })();
+  </script>
+</body>
+</html>
